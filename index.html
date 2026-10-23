@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات سكن المدرسة</title>
+  <title>STEM delivery</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -12,7 +12,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col justify-between">
 
-  <!-- رابط قاعدة البيانات السحابية الخاصة بك جاهز هنا -->
   <script>
     const FIREBASE_DB_URL = "https://supermarket-438b0-default-rtdb.firebaseio.com/";
   </script>
@@ -53,6 +52,12 @@
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">مكان السكن / الغرفة</label>
         <input type="text" id="roomNumber" required placeholder="مثال: أوضة ٣ دور أول علوي" 
                class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-300 mb-1.5">رقم الواتساب للتواصل</label>
+        <input type="tel" id="whatsappNumber" required placeholder="مثال: 01xxxxxxxxx" 
+               class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition text-right">
       </div>
 
       <div>
@@ -124,16 +129,16 @@
         <span id="copyBtnText">نسخ رسالة السوبرماركت</span>
       </button>
 
-      <!-- استعراض نص الرسالة المنسوخة النظيفة -->
+      <!-- استعراض نص الرسالة المنسوخة النظيفة للسوبرماركت -->
       <div class="space-y-1">
         <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت:</label>
         <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"></pre>
       </div>
 
-      <!-- كشف التسليم الداخلي للجنة لمعرفة صاحب كل رقم -->
+      <!-- كشف التسليم الداخلي للجنة مع زر فتح شات الواتساب للطالب -->
       <div class="space-y-1 pt-2">
-        <label class="text-xs font-semibold text-slate-400">كشف أسماء الطلاب لتسليم الأكياس في السكن:</label>
-        <div id="studentsList" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+        <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل:</label>
+        <div id="studentsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
       </div>
 
       <div class="flex justify-between items-center pt-3 border-t border-slate-700/80">
@@ -148,7 +153,6 @@
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
 
-    // ضبط المواعيد والقفل قبل الميعاد بنصف ساعة
     function updateTimings() {
       const now = new Date();
       const currentTotalMin = now.getHours() * 60 + now.getMinutes();
@@ -181,7 +185,6 @@
     setInterval(updateTimings, 1000);
     updateTimings();
 
-    // إرسال طلب الطالب مباشرة لقاعدة بيانات Firebase
     async function submitStudentOrder() {
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
@@ -190,6 +193,7 @@
       const newOrder = {
         name: document.getElementById('studentName').value.trim(),
         room: document.getElementById('roomNumber').value.trim(),
+        whatsapp: document.getElementById('whatsappNumber').value.trim(),
         items: document.getElementById('orderItems').value.trim(),
         notes: document.getElementById('orderNotes').value.trim(),
         createdAt: new Date().toISOString()
@@ -222,7 +226,6 @@
       document.getElementById('orderForm').classList.remove('hidden');
     }
 
-    // إدارة الـ PIN
     function openPinModal() {
       document.getElementById('pinInput').value = "";
       document.getElementById('pinError').classList.add('hidden');
@@ -242,7 +245,6 @@
       }
     }
 
-    // جلب الطلبات من السحابة للجنة
     async function openAdminDashboard() {
       document.getElementById('adminModal').classList.remove('hidden');
       document.getElementById('orderCountText').innerText = "جارٍ جلب البيانات...";
@@ -266,7 +268,6 @@
       document.getElementById('adminModal').classList.add('hidden');
     }
 
-    // تنسيق رسالة الواتساب البسيطة والنظيفة للسوبرماركت
     function generateSupermarketText() {
       if (loadedOrders.length === 0) return "لا توجد طلبات مسجلة حالياً.";
 
@@ -288,17 +289,28 @@
       const listContainer = document.getElementById('studentsList');
       listContainer.innerHTML = "";
       loadedOrders.forEach((ord, idx) => {
+        const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
+        const waLink = phone.startsWith('01') ? `https://wa.me/2${phone}` : `https://wa.me/${phone}`;
+
         const item = document.createElement('div');
-        item.className = "p-2 bg-slate-900 rounded-lg border border-slate-700/50 flex justify-between items-center text-xs";
+        item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700/60 flex justify-between items-center text-xs";
         item.innerHTML = `
-          <span class="font-bold text-white">${idx + 1}. ${ord.name}</span>
-          <span class="text-slate-400">${ord.room}</span>
+          <div>
+            <div class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</div>
+            <div class="text-slate-400 mt-0.5">${ord.room}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            ${phone ? `
+              <a href="${waLink}" target="_blank" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
+                <span>واتساب</span>
+              </a>
+            ` : '<span class="text-slate-500">بدون رقم</span>'}
+          </div>
         `;
         listContainer.appendChild(item);
       });
     }
 
-    // نسخ رسالة السوبرماركت بضغطة زر
     function copySupermarketMessage() {
       const text = generateSupermarketText();
       navigator.clipboard.writeText(text).then(() => {
@@ -308,7 +320,6 @@
       });
     }
 
-    // مسح الطلبات بعد انتهاء تسليم الفترة
     async function clearAllOrders() {
       if (!confirm("هل أنت متأكد من مسح جميع الطلبات الحالية لبدء فترة جديدة؟")) return;
       try {
