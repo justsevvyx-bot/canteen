@@ -42,7 +42,7 @@
     <!-- رسالة القفل في حالة انتهاء كل الفترات لليوم -->
     <div id="closedAlert" class="hidden p-5 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-center space-y-2">
       <div class="text-rose-400 font-bold text-base">تم إغلاق استقبال طلبات اليوم بالكامل</div>
-      <p class="text-xs text-slate-400">انتهت مواعيد استقبال الطلبات لفترتي اليوم (4:30 م و 9:30 م)، سيتم فتح الاستقبال لليوم التالي غداً صباحاً.</p>
+      <p class="text-xs text-slate-400">انتهت مواعيد استقبال الطلبات لفترتي اليوم (4:30 م و 9:30 م)، سيتم فتح الاستقبال تلقائياً للغد.</p>
     </div>
 
     <!-- استمارة الطالب -->
@@ -57,7 +57,7 @@
               <input type="radio" name="deliveryShift" value="5PM" id="shift5Radio" checked class="text-emerald-500 focus:ring-0">
               <span class="font-bold text-sm text-white">5:00 عصراً</span>
             </div>
-            <span class="text-[11px] text-slate-400 mt-1">يقفل 4:30 م</span>
+            <span id="subtextShift5" class="text-[11px] text-slate-400 mt-1">يقفل 4:30 م</span>
           </label>
 
           <label id="labelShift10" class="relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
@@ -65,7 +65,7 @@
               <input type="radio" name="deliveryShift" value="10PM" id="shift10Radio" class="text-emerald-500 focus:ring-0">
               <span class="font-bold text-sm text-white">10:00 مساءً</span>
             </div>
-            <span class="text-[11px] text-slate-400 mt-1">يقفل 9:30 م</span>
+            <span id="subtextShift10" class="text-[11px] text-slate-400 mt-1">يقفل 9:30 م</span>
           </label>
         </div>
       </div>
@@ -190,62 +190,71 @@
     let currentAdminFilter = "ALL";
 
     function updateTimings() {
-      const now = new Date();
-      const currentTotalMin = now.getHours() * 60 + now.getMinutes();
+      try {
+        const now = new Date();
+        const currentTotalMin = now.getHours() * 60 + now.getMinutes();
 
-      const close1Min = 16 * 60 + 30; // 4:30 PM
-      const close2Min = 21 * 60 + 30; // 9:30 PM
+        const close1Min = 16 * 60 + 30; // 4:30 PM
+        const close2Min = 21 * 60 + 30; // 9:30 PM
 
-      const radio5 = document.getElementById('shift5Radio');
-      const radio10 = document.getElementById('shift10Radio');
-      const label5 = document.getElementById('labelShift5');
-      const label10 = document.getElementById('labelShift10');
-      const form = document.getElementById('orderForm');
-      const closedAlert = document.getElementById('closedAlert');
+        const radio5 = document.getElementById('shift5Radio');
+        const radio10 = document.getElementById('shift10Radio');
+        const label5 = document.getElementById('labelShift5');
+        const label10 = document.getElementById('labelShift10');
+        const subtext5 = document.getElementById('subtextShift5');
+        const form = document.getElementById('orderForm');
+        const closedAlert = document.getElementById('closedAlert');
+        const nextShiftText = document.getElementById('nextShiftText');
+        const countdownText = document.getElementById('countdownText');
 
-      let nextShift = "";
-      let targetCloseDate = new Date();
+        let nextShift = "";
+        let targetCloseDate = new Date();
 
-      if (currentTotalMin < close1Min) {
-        // قبل 4:30 م: الفترتان متاحتان
-        nextShift = "فترة 5:00 عصراً (قفل 4:30)";
-        targetCloseDate.setHours(16, 30, 0, 0);
+        if (currentTotalMin < close1Min) {
+          nextShift = "فترة 5:00 عصراً (قفل 4:30)";
+          targetCloseDate.setHours(16, 30, 0, 0);
 
-        radio5.disabled = false;
-        label5.classList.remove('opacity-40', 'cursor-not-allowed');
-        form.classList.remove('hidden');
-        closedAlert.classList.add('hidden');
-      } else if (currentTotalMin < close2Min) {
-        // بعد 4:30 م وقبل 9:30 م: قفل فترة 5 وتحويل التحديد لفترة 10
-        nextShift = "فترة 10:00 مساءً (قفل 9:30)";
-        targetCloseDate.setHours(21, 30, 0, 0);
+          if (radio5) radio5.disabled = false;
+          if (label5) label5.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition";
+          if (subtext5) subtext5.innerText = "يقفل 4:30 م";
+          if (form) form.classList.remove('hidden');
+          if (closedAlert) closedAlert.classList.add('hidden');
+        } else if (currentTotalMin < close2Min) {
+          nextShift = "فترة 10:00 مساءً (قفل 9:30)";
+          targetCloseDate.setHours(21, 30, 0, 0);
 
-        radio5.disabled = true;
-        label5.classList.add('opacity-40', 'cursor-not-allowed');
-        if (radio5.checked) {
-          radio10.checked = true;
+          if (radio5) radio5.disabled = true;
+          if (label5) label5.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-800 rounded-xl opacity-40 cursor-not-allowed";
+          if (subtext5) subtext5.innerText = "مغلقة لهذه الدفعة";
+          if (radio5 && radio5.checked && radio10) {
+            radio10.checked = true;
+          }
+          if (form) form.classList.remove('hidden');
+          if (closedAlert) closedAlert.classList.add('hidden');
+        } else {
+          nextShift = "مغلق لليوم (يفتح غداً)";
+          targetCloseDate.setDate(targetCloseDate.getDate() + 1);
+          targetCloseDate.setHours(16, 30, 0, 0);
+
+          if (form) form.classList.add('hidden');
+          if (closedAlert) closedAlert.classList.remove('hidden');
         }
-        form.classList.remove('hidden');
-        closedAlert.classList.add('hidden');
-      } else {
-        // بعد 9:30 م: قفل الفورم بالكامل لانتهاء المواعيد
-        nextShift = "مغلق لليوم (يفتح غداً)";
-        targetCloseDate.setDate(targetCloseDate.getDate() + 1);
-        targetCloseDate.setHours(16, 30, 0, 0);
 
-        form.classList.add('hidden');
-        closedAlert.classList.remove('hidden');
+        if (nextShiftText) nextShiftText.innerText = nextShift;
+        const diffSec = Math.max(0, Math.floor((targetCloseDate - now) / 1000));
+        const hours = String(Math.floor(diffSec / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
+        const seconds = String(diffSec % 60).padStart(2, '0');
+        if (countdownText) countdownText.innerText = `${hours}:${minutes}:${seconds}`;
+      } catch (err) {
+        console.error("Timings error:", err);
       }
-
-      document.getElementById('nextShiftText').innerText = nextShift;
-      const diffSec = Math.max(0, Math.floor((targetCloseDate - now) / 1000));
-      const hours = String(Math.floor(diffSec / 3600)).padStart(2, '0');
-      const minutes = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
-      const seconds = String(diffSec % 60).padStart(2, '0');
-      document.getElementById('countdownText').innerText = `${hours}:${minutes}:${seconds}`;
     }
-    setInterval(updateTimings, 1000);
-    updateTimings();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateTimings();
+      setInterval(updateTimings, 1000);
+    });
 
     async function submitStudentOrder() {
       const btn = document.getElementById('submitBtn');
@@ -389,16 +398,4 @@
         const shiftTag = ord.shift === "10PM" ? "10 مساءً" : "5 عصراً";
 
         const item = document.createElement('div');
-        item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700/60 flex justify-between items-center text-xs";
-        item.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
-              ${timeDisplay ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
-            </div>
-            <div class="text-slate-400 mt-0.5">${ord.room}</div>
-          </div>
-          <div class="flex items-center gap-2">
-            ${phone ? `
-              <a href="${waLink}" 
+        item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700/60 flex justify-between items-cen
