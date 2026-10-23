@@ -30,7 +30,7 @@
     <!-- شريط التوقيت والحساب التلقائي لقفل الطلبات -->
     <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-700/60 flex items-center justify-between text-sm">
       <div>
-        <span class="text-slate-400 block text-xs">الفترة القادمة</span>
+        <span class="text-slate-400 block text-xs">الفترة القادمة المتاحة</span>
         <span id="nextShiftText" class="font-bold text-emerald-400 text-base">جارٍ الحساب...</span>
       </div>
       <div class="text-left">
@@ -39,9 +39,37 @@
       </div>
     </div>
 
+    <!-- رسالة القفل في حالة انتهاء كل الفترات لليوم -->
+    <div id="closedAlert" class="hidden p-5 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-center space-y-2">
+      <div class="text-rose-400 font-bold text-base">تم إغلاق استقبال طلبات اليوم بالكامل</div>
+      <p class="text-xs text-slate-400">انتهت مواعيد استقبال الطلبات لفترتي اليوم (4:30 م و 9:30 م)، سيتم فتح الاستقبال لليوم التالي غداً صباحاً.</p>
+    </div>
+
     <!-- استمارة الطالب -->
     <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
+      <!-- اختيار فترة الاستلام -->
+      <div>
+        <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك:</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label id="labelShift5" class="relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+            <div class="flex items-center gap-2">
+              <input type="radio" name="deliveryShift" value="5PM" id="shift5Radio" checked class="text-emerald-500 focus:ring-0">
+              <span class="font-bold text-sm text-white">5:00 عصراً</span>
+            </div>
+            <span class="text-[11px] text-slate-400 mt-1">يقفل 4:30 م</span>
+          </label>
+
+          <label id="labelShift10" class="relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+            <div class="flex items-center gap-2">
+              <input type="radio" name="deliveryShift" value="10PM" id="shift10Radio" class="text-emerald-500 focus:ring-0">
+              <span class="font-bold text-sm text-white">10:00 مساءً</span>
+            </div>
+            <span class="text-[11px] text-slate-400 mt-1">يقفل 9:30 م</span>
+          </label>
+        </div>
+      </div>
+
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">الاسم</label>
         <input type="text" id="studentName" required placeholder="اكتب اسمك هنا" 
@@ -84,7 +112,7 @@
     <div id="successBox" class="hidden p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center space-y-3">
       <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
       <h3 class="font-bold text-lg text-emerald-400">تم تسجيل طلبك بنجاح!</h3>
-      <p class="text-xs text-slate-400">سيتم تجهيز طلبك مع السوبرماركت في موعد الدفعة.</p>
+      <p class="text-xs text-slate-400" id="successShiftNotice">سيتم تجهيز طلبك في موعد الدفعة المحددة.</p>
       <button onclick="resetFormView()" class="text-xs text-emerald-400 underline hover:text-emerald-300">تسجيل طلب آخر</button>
     </div>
 
@@ -123,10 +151,17 @@
         <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
+      <!-- فلترة عرض الطلبات حسب الفترة -->
+      <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+        <button onclick="changeAdminFilter('ALL')" id="filterAllBtn" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
+        <button onclick="changeAdminFilter('5PM')" id="filter5Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
+        <button onclick="changeAdminFilter('10PM')" id="filter10Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
+      </div>
+
       <!-- زر نسخ الرسالة للسوبرماركت مباشرة -->
       <button onclick="copySupermarketMessage()" 
               class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-        <span id="copyBtnText">نسخ رسالة السوبرماركت</span>
+        <span id="copyBtnText">نسخ رسالة السوبرماركت للفترة المختارة</span>
       </button>
 
       <!-- استعراض نص الرسالة المنسوخة النظيفة للسوبرماركت -->
@@ -135,7 +170,7 @@
         <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"></pre>
       </div>
 
-      <!-- كشف التسليم الداخلي للجنة مع زر فتح شات الواتساب للطالب -->
+      <!-- كشف التسليم الداخلي للجنة مع التوقيت ورقم الواتساب والفترة -->
       <div class="space-y-1 pt-2">
         <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل:</label>
         <div id="studentsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
@@ -152,6 +187,7 @@
   <script>
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
+    let currentAdminFilter = "ALL";
 
     function updateTimings() {
       const now = new Date();
@@ -160,19 +196,45 @@
       const close1Min = 16 * 60 + 30; // 4:30 PM
       const close2Min = 21 * 60 + 30; // 9:30 PM
 
+      const radio5 = document.getElementById('shift5Radio');
+      const radio10 = document.getElementById('shift10Radio');
+      const label5 = document.getElementById('labelShift5');
+      const label10 = document.getElementById('labelShift10');
+      const form = document.getElementById('orderForm');
+      const closedAlert = document.getElementById('closedAlert');
+
       let nextShift = "";
       let targetCloseDate = new Date();
 
       if (currentTotalMin < close1Min) {
+        // قبل 4:30 م: الفترتان متاحتان
         nextShift = "فترة 5:00 عصراً (قفل 4:30)";
         targetCloseDate.setHours(16, 30, 0, 0);
+
+        radio5.disabled = false;
+        label5.classList.remove('opacity-40', 'cursor-not-allowed');
+        form.classList.remove('hidden');
+        closedAlert.classList.add('hidden');
       } else if (currentTotalMin < close2Min) {
+        // بعد 4:30 م وقبل 9:30 م: قفل فترة 5 وتحويل التحديد لفترة 10
         nextShift = "فترة 10:00 مساءً (قفل 9:30)";
         targetCloseDate.setHours(21, 30, 0, 0);
+
+        radio5.disabled = true;
+        label5.classList.add('opacity-40', 'cursor-not-allowed');
+        if (radio5.checked) {
+          radio10.checked = true;
+        }
+        form.classList.remove('hidden');
+        closedAlert.classList.add('hidden');
       } else {
-        nextShift = "فترة 5:00 عصر الغد";
+        // بعد 9:30 م: قفل الفورم بالكامل لانتهاء المواعيد
+        nextShift = "مغلق لليوم (يفتح غداً)";
         targetCloseDate.setDate(targetCloseDate.getDate() + 1);
         targetCloseDate.setHours(16, 30, 0, 0);
+
+        form.classList.add('hidden');
+        closedAlert.classList.remove('hidden');
       }
 
       document.getElementById('nextShiftText').innerText = nextShift;
@@ -190,13 +252,19 @@
       btn.disabled = true;
       btn.innerText = "جارٍ الإرسال...";
 
+      const selectedShift = document.querySelector('input[name="deliveryShift"]:checked').value;
+      const now = new Date();
+      const timeFormatted = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
       const newOrder = {
         name: document.getElementById('studentName').value.trim(),
         room: document.getElementById('roomNumber').value.trim(),
         whatsapp: document.getElementById('whatsappNumber').value.trim(),
         items: document.getElementById('orderItems').value.trim(),
         notes: document.getElementById('orderNotes').value.trim(),
-        createdAt: new Date().toISOString()
+        shift: selectedShift,
+        orderTime: timeFormatted,
+        createdAt: now.toISOString()
       };
 
       try {
@@ -208,6 +276,8 @@
 
         if (res.ok) {
           document.getElementById('orderForm').classList.add('hidden');
+          const shiftTitle = selectedShift === "5PM" ? "فترة 5:00 عصراً" : "فترة 10:00 مساءً";
+          document.getElementById('successShiftNotice').innerText = `تم تسجيل طلبك بنجاح ضمن (${shiftTitle}).`;
           document.getElementById('successBox').classList.remove('hidden');
           document.getElementById('orderForm').reset();
         } else {
@@ -223,7 +293,7 @@
 
     function resetFormView() {
       document.getElementById('successBox').classList.add('hidden');
-      document.getElementById('orderForm').classList.remove('hidden');
+      updateTimings();
     }
 
     function openPinModal() {
@@ -268,10 +338,33 @@
       document.getElementById('adminModal').classList.add('hidden');
     }
 
-    function generateSupermarketText() {
-      if (loadedOrders.length === 0) return "لا توجد طلبات مسجلة حالياً.";
+    function changeAdminFilter(filter) {
+      currentAdminFilter = filter;
+      const allBtn = document.getElementById('filterAllBtn');
+      const f5Btn = document.getElementById('filter5Btn');
+      const f10Btn = document.getElementById('filter10Btn');
 
-      return loadedOrders.map((ord, idx) => {
+      [allBtn, f5Btn, f10Btn].forEach(b => {
+        b.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+      });
+
+      if (filter === 'ALL') allBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
+      if (filter === '5PM') f5Btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
+      if (filter === '10PM') f10Btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
+
+      renderAdminOrders();
+    }
+
+    function getFilteredOrders() {
+      if (currentAdminFilter === 'ALL') return loadedOrders;
+      return loadedOrders.filter(ord => (ord.shift || '5PM') === currentAdminFilter);
+    }
+
+    function generateSupermarketText() {
+      const filtered = getFilteredOrders();
+      if (filtered.length === 0) return "لا توجد طلبات مسجلة لهذه الفترة حالياً.";
+
+      return filtered.map((ord, idx) => {
         const lines = ord.items.split('\n').filter(l => l.trim() !== "");
         const formattedItems = lines.map(l => `- ${l.trim()}`).join('\n');
         let block = `${idx + 1}-\n${formattedItems}`;
@@ -282,54 +375,30 @@
     }
 
     function renderAdminOrders() {
-      document.getElementById('orderCountText').innerText = `إجمالي الطلبات الحالية: ${loadedOrders.length}`;
+      const filtered = getFilteredOrders();
+      document.getElementById('orderCountText').innerText = `إجمالي الطلبات المعروضة: ${filtered.length} (من أصل ${loadedOrders.length})`;
       const text = generateSupermarketText();
       document.getElementById('previewBox').innerText = text;
 
       const listContainer = document.getElementById('studentsList');
       listContainer.innerHTML = "";
-      loadedOrders.forEach((ord, idx) => {
+      filtered.forEach((ord, idx) => {
         const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
         const waLink = phone.startsWith('01') ? `https://wa.me/2${phone}` : `https://wa.me/${phone}`;
+        const timeDisplay = ord.orderTime || (ord.createdAt ? new Date(ord.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : '');
+        const shiftTag = ord.shift === "10PM" ? "10 مساءً" : "5 عصراً";
 
         const item = document.createElement('div');
         item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700/60 flex justify-between items-center text-xs";
         item.innerHTML = `
           <div>
-            <div class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
+              ${timeDisplay ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
+            </div>
             <div class="text-slate-400 mt-0.5">${ord.room}</div>
           </div>
           <div class="flex items-center gap-2">
             ${phone ? `
-              <a href="${waLink}" target="_blank" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
-                <span>واتساب</span>
-              </a>
-            ` : '<span class="text-slate-500">بدون رقم</span>'}
-          </div>
-        `;
-        listContainer.appendChild(item);
-      });
-    }
-
-    function copySupermarketMessage() {
-      const text = generateSupermarketText();
-      navigator.clipboard.writeText(text).then(() => {
-        const btnText = document.getElementById('copyBtnText');
-        btnText.innerText = "تم نسخ الرسالة بنجاح! ✓";
-        setTimeout(() => btnText.innerText = "نسخ رسالة السوبرماركت", 2000);
-      });
-    }
-
-    async function clearAllOrders() {
-      if (!confirm("هل أنت متأكد من مسح جميع الطلبات الحالية لبدء فترة جديدة؟")) return;
-      try {
-        await fetch(`${FIREBASE_DB_URL}orders.json`, { method: "DELETE" });
-        loadedOrders = [];
-        renderAdminOrders();
-      } catch (err) {
-        alert("فشل مسح الطلبات.");
-      }
-    }
-  </script>
-</body>
-</html>
+              <a href="${waLink}" 
