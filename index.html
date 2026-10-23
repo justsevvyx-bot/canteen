@@ -344,26 +344,45 @@
         const shiftTag = ord.shift || "5:00 عصراً";
 
         const item = document.createElement('div');
-        item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center text-xs";
+        item.className = "p-3 bg-slate-900 rounded-xl border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs";
         item.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-1.5">
               <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
               ${timeDisplay ? `<span dir="ltr" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
             </div>
-            <div class="text-slate-400 mt-0.5">${ord.room}</div>
+            <div class="text-slate-400">${ord.room}</div>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
             ${phone ? `
-              <a href="${waLink}" target="_blank" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
+              <a href="${waLink}" target="_blank" class="px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
                 <span>واتساب</span>
               </a>
             ` : '<span class="text-slate-500">بدون رقم</span>'}
+            <button onclick="deleteSingleOrder('${ord.id}')" class="px-2.5 py-1.5 bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/40 text-rose-300 font-bold rounded-lg transition" title="حذف الطلب">
+              ✕
+            </button>
           </div>
         `;
         container.appendChild(item);
       });
+    }
+
+    async function deleteSingleOrder(orderId) {
+      if (!confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
+      try {
+        const res = await fetch(FIREBASE_DB_URL + "orders/" + orderId + ".json", {
+          method: "DELETE"
+        });
+        if (res.ok) {
+          openAdminDashboard();
+        } else {
+          alert("فشل حذف الطلب.");
+        }
+      } catch (err) {
+        alert("حدث خطأ أثناء الحذف.");
+      }
     }
 
     function copySupermarketMessage() {
@@ -386,5 +405,4 @@
       }
     }
   </script>
-</body>
-</html>
+</
