@@ -24,41 +24,39 @@
     </div>
 
     <!-- تايمر موحد وبسيط -->
-    <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700/80 flex items-center justify-between">
+    <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between">
       <div>
-        <span class="text-slate-400 block text-xs font-semibold">أقرب موعد قفل قادم</span>
-        <span id="shiftTitleDisplay" class="font-bold text-emerald-400 text-sm sm:text-base">فترة 5:00 عصراً (قفل 4:30)</span>
+        <span class="text-slate-400 block text-xs">أقرب موعد قفل قادم</span>
+        <span id="nextShiftText" class="font-bold text-emerald-400 text-sm sm:text-base">جارٍ الحساب...</span>
       </div>
       <div class="text-left">
-        <span class="text-slate-400 block text-xs font-semibold">متبقي</span>
-        <span id="timerCountdown" class="font-mono font-extrabold text-amber-400 text-lg sm:text-xl">--:--:--</span>
+        <span class="text-slate-400 block text-xs">متبقي</span>
+        <span id="countdownText" class="font-mono font-extrabold text-amber-400 text-lg sm:text-xl">00:00:00</span>
       </div>
     </div>
 
     <!-- استمارة الطالب -->
-    <form id="orderForm" class="space-y-4">
+    <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
       <!-- اختيار فترة الاستلام -->
       <div>
-        <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
+        <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك:</label>
         <div class="grid grid-cols-2 gap-3">
-          
-          <label id="labelShift5" class="relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
-            <div class="flex items-center gap-2">
-              <input type="radio" name="deliveryShift" value="5PM" id="shift5Radio" checked class="text-emerald-500 focus:ring-0">
-              <span class="font-bold text-sm text-white">5:00 عصراً</span>
+          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+            <input type="radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
+            <div>
+              <span class="font-bold text-sm text-white block">5:00 عصراً</span>
+              <span class="text-[11px] text-slate-400">يقفل 4:30 م</span>
             </div>
-            <span id="subtextShift5" class="text-[11px] text-slate-400 mt-1">تقفل 4:30 م للتجهيز</span>
           </label>
 
-          <label id="labelShift10" class="relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
-            <div class="flex items-center gap-2">
-              <input type="radio" name="deliveryShift" value="10PM" id="shift10Radio" class="text-emerald-500 focus:ring-0">
-              <span class="font-bold text-sm text-white">10:00 مساءً</span>
+          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+            <input type="radio" name="deliveryShift" value="10:00 مساءً" class="text-emerald-500 focus:ring-0">
+            <div>
+              <span class="font-bold text-sm text-white block">10:00 مساءً</span>
+              <span class="text-[11px] text-slate-400">يقفل 9:30 م</span>
             </div>
-            <span id="subtextShift10" class="text-[11px] text-slate-400 mt-1">تقفل 9:30 م للتجهيز</span>
           </label>
-
         </div>
       </div>
 
@@ -105,14 +103,14 @@
       <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
       <h3 class="font-bold text-lg text-emerald-400">تم تسجيل طلبك بنجاح!</h3>
       <p class="text-xs text-slate-400" id="successShiftNotice">سيتم تجهيز طلبك في موعد الدفعة المحددة.</p>
-      <button type="button" id="resetFormBtn" class="text-xs text-emerald-400 underline hover:text-emerald-300">تسجيل طلب آخر</button>
+      <button type="button" onclick="resetFormView()" class="text-xs text-emerald-400 underline hover:text-emerald-300">تسجيل طلب آخر</button>
     </div>
 
   </div>
 
   <!-- زر الوصول السري للجنة -->
   <div class="text-center py-4">
-    <button type="button" id="openPinBtn" class="text-xs text-slate-500 hover:text-slate-400 transition underline">
+    <button type="button" onclick="openPinModal()" class="text-xs text-slate-500 hover:text-slate-400 transition underline">
       كشف إدارة اللجنة
     </button>
   </div>
@@ -125,8 +123,8 @@
              class="w-full text-center tracking-widest text-xl py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500">
       <p id="pinError" class="text-rose-400 text-xs hidden">الرمز السري غير صحيح</p>
       <div class="flex gap-2">
-        <button type="button" id="confirmPinBtn" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm">دخول</button>
-        <button type="button" id="cancelPinBtn" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm">إلغاء</button>
+        <button type="button" onclick="verifyPin()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm">دخول</button>
+        <button type="button" onclick="closePinModal()" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm">إلغاء</button>
       </div>
     </div>
   </div>
@@ -140,37 +138,37 @@
           <h2 class="font-extrabold text-white text-lg">لوحة طلبات اللجنة</h2>
           <span id="orderCountText" class="text-xs text-emerald-400">جارٍ جلب الطلبات...</span>
         </div>
-        <button type="button" id="closeAdminBtnTop" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+        <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
-      <!-- فلترة عرض الطلبات حسب الفترة -->
+      <!-- فلاتر الفترات -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-        <button type="button" id="filterAllBtn" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
-        <button type="button" id="filter5Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
-        <button type="button" id="filter10Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
+        <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
+        <button type="button" onclick="setAdminFilter('5:00 عصراً')" id="flt5" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
+        <button type="button" onclick="setAdminFilter('10:00 مساءً')" id="flt10" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
       </div>
 
-      <!-- زر نسخ الرسالة للسوبرماركت مباشرة -->
-      <button type="button" id="copyBtn" 
+      <!-- زر نسخ الرسالة للسوبرماركت -->
+      <button type="button" onclick="copySupermarketMessage()" 
               class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-        <span id="copyBtnText">نسخ رسالة السوبرماركت للفترة المختارة</span>
+        <span id="copyBtnText">نسخ رسالة السوبرماركت</span>
       </button>
 
-      <!-- استعراض نص الرسالة المنسوخة النظيفة للسوبرماركت -->
+      <!-- نص الرسالة المنسوخة النظيفة للسوبرماركت -->
       <div class="space-y-1">
-        <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت</label>
+        <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت:</label>
         <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"></pre>
       </div>
 
       <!-- كشف التسليم الداخلي للجنة -->
       <div class="space-y-1 pt-2">
-        <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل</label>
+        <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل:</label>
         <div id="studentsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
       </div>
 
       <div class="flex justify-between items-center pt-3 border-t border-slate-700/80">
-        <button type="button" id="clearAllBtn" class="text-xs text-rose-400 hover:text-rose-300 underline">مسح كل الطلبات لبدء فترة جديدة</button>
-        <button type="button" id="closeAdminBtnBottom" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl">إغلاق</button>
+        <button type="button" onclick="clearAllOrders()" class="text-xs text-rose-400 hover:text-rose-300 underline">مسح كل الطلبات لبدء فترة جديدة</button>
+        <button type="button" onclick="closeAdminModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl">إغلاق</button>
       </div>
 
     </div>
@@ -180,91 +178,48 @@
     const FIREBASE_DB_URL = "https://supermarket-438b0-default-rtdb.firebaseio.com/";
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
-    let currentAdminFilter = "ALL";
+    let currentFilter = "ALL";
 
+    // تايمر حساب القفل بدون أي تلاعب بالعناصر الأخرى
     function updateTimings() {
       const now = new Date();
-      const currentTotalMin = now.getHours() * 60 + now.getMinutes();
+      const currentMin = now.getHours() * 60 + now.getMinutes();
 
-      // غلق فترة 5 فقط من 4:30 م إلى 5:00 م (من دقيقة 990 إلى 1020)
-      const isShift5Closed = (currentTotalMin >= 990 && currentTotalMin < 1020);
-      
-      // غلق فترة 10 فقط من 9:30 م إلى 10:00 م (من دقيقة 1290 إلى 1320)
-      const isShift10Closed = (currentTotalMin >= 1290 && currentTotalMin < 1320);
+      let targetDate = new Date();
+      let shiftText = "";
 
-      const radio5 = document.getElementById('shift5Radio');
-      const radio10 = document.getElementById('shift10Radio');
-      const label5 = document.getElementById('labelShift5');
-      const label10 = document.getElementById('labelShift10');
-      const subtext5 = document.getElementById('subtextShift5');
-      const subtext10 = document.getElementById('subtextShift10');
-
-      if (radio5 && label5 && subtext5) {
-        if (isShift5Closed) {
-          radio5.disabled = true;
-          label5.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-800 rounded-xl opacity-40 cursor-not-allowed";
-          subtext5.innerText = "مغلقة للتجهيز (تفتح 5:00 م)";
-          if (radio5.checked && radio10) radio10.checked = true;
-        } else {
-          radio5.disabled = false;
-          label5.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition";
-          subtext5.innerText = "تقفل 4:30 م للتجهيز";
-        }
-      }
-
-      if (radio10 && label10 && subtext10) {
-        if (isShift10Closed) {
-          radio10.disabled = true;
-          label10.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-800 rounded-xl opacity-40 cursor-not-allowed";
-          subtext10.innerText = "مغلقة للتجهيز (تفتح 10:00 م)";
-          if (radio10.checked && radio5) radio5.checked = true;
-        } else {
-          radio10.disabled = false;
-          label10.className = "relative flex flex-col p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition";
-          subtext10.innerText = "تقفل 9:30 م للتجهيز";
-        }
-      }
-
-      let nextCloseDate = new Date();
-      let shiftLabel = "";
-
-      if (currentTotalMin < 990) {
-        shiftLabel = "فترة 5:00 عصراً (قفل 4:30)";
-        nextCloseDate.setHours(16, 30, 0, 0);
-      } else if (currentTotalMin < 1290) {
-        shiftLabel = "فترة 10:00 مساءً (قفل 9:30)";
-        nextCloseDate.setHours(21, 30, 0, 0);
+      if (currentMin < 16 * 60 + 30) {
+        shiftText = "فترة 5:00 عصراً (قفل 4:30)";
+        targetDate.setHours(16, 30, 0, 0);
+      } else if (currentMin < 21 * 60 + 30) {
+        shiftText = "فترة 10:00 مساءً (قفل 9:30)";
+        targetDate.setHours(21, 30, 0, 0);
       } else {
-        shiftLabel = "فترة 5:00 عصر الغد (قفل 4:30)";
-        nextCloseDate.setDate(nextCloseDate.getDate() + 1);
-        nextCloseDate.setHours(16, 30, 0, 0);
+        shiftText = "فترة 5:00 عصر الغد (قفل 4:30)";
+        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.setHours(16, 30, 0, 0);
       }
 
-      const titleEl = document.getElementById('shiftTitleDisplay');
-      if (titleEl) titleEl.innerText = shiftLabel;
-
-      const diffSec = Math.max(0, Math.floor((nextCloseDate - now) / 1000));
+      const diffSec = Math.max(0, Math.floor((targetDate - now) / 1000));
       const hours = String(Math.floor(diffSec / 3600)).padStart(2, '0');
       const minutes = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
       const seconds = String(diffSec % 60).padStart(2, '0');
 
-      const timerEl = document.getElementById('timerCountdown');
-      if (timerEl) timerEl.innerText = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('nextShiftText').innerText = shiftText;
+      document.getElementById('countdownText').innerText = hours + ":" + minutes + ":" + seconds;
     }
 
-    // تشغيل العداد فوراً
     updateTimings();
     setInterval(updateTimings, 1000);
 
-    // تسجيل الطلب
-    document.getElementById('orderForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // إرسال الطلب
+    async function submitStudentOrder() {
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerText = "جارٍ الإرسال...";
 
-      const checkedRadio = document.querySelector('input[name="deliveryShift"]:checked');
-      const selectedShift = checkedRadio ? checkedRadio.value : "5PM";
+      const shiftRadio = document.querySelector('input[name="deliveryShift"]:checked');
+      const selectedShift = shiftRadio ? shiftRadio.value : "5:00 عصراً";
       const now = new Date();
       const timeFormatted = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
@@ -272,15 +227,15 @@
         name: document.getElementById('studentName').value.trim(),
         room: document.getElementById('roomNumber').value.trim(),
         whatsapp: document.getElementById('whatsappNumber').value.trim(),
+        shift: selectedShift,
         items: document.getElementById('orderItems').value.trim(),
         notes: document.getElementById('orderNotes').value.trim(),
-        shift: selectedShift,
         orderTime: timeFormatted,
         createdAt: now.toISOString()
       };
 
       try {
-        const res = await fetch(`${FIREBASE_DB_URL}orders.json`, {
+        const res = await fetch(FIREBASE_DB_URL + "orders.json", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newOrder)
@@ -288,8 +243,7 @@
 
         if (res.ok) {
           document.getElementById('orderForm').classList.add('hidden');
-          const shiftTitle = selectedShift === "5PM" ? "فترة 5:00 عصراً" : "فترة 10:00 مساءً";
-          document.getElementById('successShiftNotice').innerText = `تم تسجيل طلبك بنجاح ضمن (${shiftTitle}).`;
+          document.getElementById('successShiftNotice').innerText = "تم تسجيل طلبك بنجاح ضمن (" + selectedShift + ").";
           document.getElementById('successBox').classList.remove('hidden');
           document.getElementById('orderForm').reset();
         } else {
@@ -301,102 +255,137 @@
         btn.disabled = false;
         btn.innerText = "إرسال الطلب (Submit)";
       }
-    });
+    }
 
-    document.getElementById('resetFormBtn').addEventListener('click', () => {
+    function resetFormView() {
       document.getElementById('successBox').classList.add('hidden');
       document.getElementById('orderForm').classList.remove('hidden');
-      updateTimings();
-    });
+    }
 
-    // إدارة اللجنة والـ PIN
-    document.getElementById('openPinBtn').addEventListener('click', () => {
+    // اللجنة والدخول السري
+    function openPinModal() {
       document.getElementById('pinInput').value = "";
       document.getElementById('pinError').classList.add('hidden');
       document.getElementById('pinModal').classList.remove('hidden');
-    });
+    }
 
-    document.getElementById('cancelPinBtn').addEventListener('click', () => {
+    function closePinModal() {
       document.getElementById('pinModal').classList.add('hidden');
-    });
+    }
 
-    document.getElementById('confirmPinBtn').addEventListener('click', () => {
+    function verifyPin() {
       const pin = document.getElementById('pinInput').value.trim();
       if (pin === COMMITTEE_PIN) {
-        document.getElementById('pinModal').classList.add('hidden');
+        closePinModal();
         openAdminDashboard();
       } else {
         document.getElementById('pinError').classList.remove('hidden');
       }
-    });
+    }
 
     async function openAdminDashboard() {
       document.getElementById('adminModal').classList.remove('hidden');
       document.getElementById('orderCountText').innerText = "جارٍ جلب البيانات...";
 
       try {
-        const res = await fetch(`${FIREBASE_DB_URL}orders.json`);
+        const res = await fetch(FIREBASE_DB_URL + "orders.json");
         const data = await res.json();
         loadedOrders = [];
-
         if (data) {
           loadedOrders = Object.keys(data).map(key => ({ id: key, ...data[key] }));
         }
-
         renderAdminOrders();
       } catch (err) {
         document.getElementById('orderCountText').innerText = "خطأ في جلب الطلبات";
       }
     }
 
-    const closeAdmin = () => document.getElementById('adminModal').classList.add('hidden');
-    document.getElementById('closeAdminBtnTop').addEventListener('click', closeAdmin);
-    document.getElementById('closeAdminBtnBottom').addEventListener('click', closeAdmin);
+    function closeAdminModal() {
+      document.getElementById('adminModal').classList.add('hidden');
+    }
 
-    // فلاتر اللجنة
-    function setFilter(filter) {
-      currentAdminFilter = filter;
-      const allBtn = document.getElementById('filterAllBtn');
-      const f5Btn = document.getElementById('filter5Btn');
-      const f10Btn = document.getElementById('filter10Btn');
-
-      [allBtn, f5Btn, f10Btn].forEach(b => {
-        b.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
-      });
-
-      if (filter === 'ALL') allBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
-      if (filter === '5PM') f5Btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
-      if (filter === '10PM') f10Btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
-
+    function setAdminFilter(f) {
+      currentFilter = f;
+      document.getElementById('fltAll').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('flt5').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === '5:00 عصراً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('flt10').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === '10:00 مساءً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
       renderAdminOrders();
     }
 
-    document.getElementById('filterAllBtn').addEventListener('click', () => setFilter('ALL'));
-    document.getElementById('filter5Btn').addEventListener('click', () => setFilter('5PM'));
-    document.getElementById('filter10Btn').addEventListener('click', () => setFilter('10PM'));
-
-    function getFilteredOrders() {
-      if (currentAdminFilter === 'ALL') return loadedOrders;
-      return loadedOrders.filter(ord => (ord.shift || '5PM') === currentAdminFilter);
+    function getOrdersList() {
+      if (currentFilter === 'ALL') return loadedOrders;
+      return loadedOrders.filter(o => o.shift === currentFilter);
     }
 
     function generateSupermarketText() {
-      const filtered = getFilteredOrders();
-      if (filtered.length === 0) return "لا توجد طلبات مسجلة لهذه الفترة حالياً.";
+      const list = getOrdersList();
+      if (list.length === 0) return "لا توجد طلبات مسجلة لهذه الفترة حالياً.";
 
-      return filtered.map((ord, idx) => {
+      return list.map((ord, idx) => {
         const lines = ord.items.split('\n').filter(l => l.trim() !== "");
-        const formattedItems = lines.map(l => `- ${l.trim()}`).join('\n');
-        let block = `${idx + 1}-\n${formattedItems}`;
-        if (ord.notes) block += `\n- ملاحظة: ${ord.notes}`;
-        block += `\n- الحساب: `;
+        const formattedItems = lines.map(l => "- " + l.trim()).join('\n');
+        let block = (idx + 1) + "-\n" + formattedItems;
+        if (ord.notes) block += "\n- ملاحظة: " + ord.notes;
+        block += "\n- الحساب: ";
         return block;
       }).join('\n\n');
     }
 
     function renderAdminOrders() {
-      const filtered = getFilteredOrders();
-      document.getElementById('orderCountText').innerText = `إجمالي الطلبات: ${filtered.length} (من أصل ${loadedOrders.length})`;
+      const list = getOrdersList();
+      document.getElementById('orderCountText').innerText = "إجمالي الطلبات المعروضة: " + list.length + " (من أصل " + loadedOrders.length + ")";
       document.getElementById('previewBox').innerText = generateSupermarketText();
 
-      const listContainer = document.getElementById('studentsL
+      const container = document.getElementById('studentsList');
+      container.innerHTML = "";
+      list.forEach((ord, idx) => {
+        const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
+        const waLink = phone.startsWith('01') ? "https://wa.me/2" + phone : "https://wa.me/" + phone;
+        const timeDisplay = ord.orderTime || "";
+        const shiftTag = ord.shift || "5:00 عصراً";
+
+        const item = document.createElement('div');
+        item.className = "p-2.5 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center text-xs";
+        item.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
+              ${timeDisplay ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
+            </div>
+            <div class="text-slate-400 mt-0.5">${ord.room}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            ${phone ? `
+              <a href="${waLink}" target="_blank" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
+                <span>واتساب</span>
+              </a>
+            ` : '<span class="text-slate-500">بدون رقم</span>'}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function copySupermarketMessage() {
+      const text = generateSupermarketText();
+      navigator.clipboard.writeText(text).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerText = "تم نسخ الرسالة بنجاح! ✓";
+        setTimeout(() => btnText.innerText = "نسخ رسالة السوبرماركت", 2000);
+      });
+    }
+
+    async function clearAllOrders() {
+      if (!confirm("هل أنت متأكد من مسح جميع الطلبات الحالية لبدء فترة جديدة؟")) return;
+      try {
+        await fetch(FIREBASE_DB_URL + "orders.json", { method: "DELETE" });
+        loadedOrders = [];
+        renderAdminOrders();
+      } catch (err) {
+        alert("فشل مسح الطلبات.");
+      }
+    }
+  </script>
+</body>
+</html>
