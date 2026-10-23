@@ -31,7 +31,7 @@
       </div>
       <div class="text-left">
         <span class="text-slate-400 block text-xs">متبقي</span>
-        <span id="countdownText" class="font-mono font-extrabold text-amber-400 text-lg sm:text-xl">00:00:00</span>
+        <span id="countdownText" dir="ltr" class="font-mono font-extrabold text-amber-400 text-lg sm:text-xl">00:00:00</span>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
       
       <!-- اختيار فترة الاستلام -->
       <div>
-        <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك:</label>
+        <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
         <div class="grid grid-cols-2 gap-3">
           <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
             <input type="radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
@@ -68,26 +68,26 @@
 
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">مكان السكن / الغرفة</label>
-        <input type="text" id="roomNumber" required placeholder="مثال: أوضة ٣ دور أول علوي" 
+        <input type="text" id="roomNumber" required placeholder="مثال أوضة ٣ دور أول علوي" 
                class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">رقم الواتساب للتواصل</label>
-        <input type="tel" id="whatsappNumber" required placeholder="مثال: 01xxxxxxxxx" 
+        <input type="tel" id="whatsappNumber" required placeholder="01xxxxxxxxx" 
                class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition text-right">
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">الأوردر بالتفصيل والكميات</label>
         <textarea id="orderItems" required rows="4" 
-                  placeholder="مثال:&#10;2 كيس شيبسي بالجبنة كبير&#10;1 عصير جهينة مانجو" 
+                  placeholder="مثال&#10;2 كيس شيبسي بالجبنة كبير&#10;1 عصير جهينة مانجو" 
                   class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition text-sm leading-relaxed"></textarea>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-1.5">ملاحظة أو بديل (اختياري)</label>
-        <input type="text" id="orderNotes" placeholder="مثال: لو الحجم الكبير مش موجود هات الوسط" 
+        <input type="text" id="orderNotes" placeholder="مثال لو الحجم الكبير مش موجود هات الوسط" 
                class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition text-sm">
       </div>
 
@@ -156,13 +156,13 @@
 
       <!-- نص الرسالة المنسوخة النظيفة للسوبرماركت -->
       <div class="space-y-1">
-        <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت:</label>
+        <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت</label>
         <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"></pre>
       </div>
 
       <!-- كشف التسليم الداخلي للجنة -->
       <div class="space-y-1 pt-2">
-        <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل:</label>
+        <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل</label>
         <div id="studentsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
       </div>
 
@@ -180,7 +180,6 @@
     let loadedOrders = [];
     let currentFilter = "ALL";
 
-    // تايمر حساب القفل بدون أي تلاعب بالعناصر الأخرى
     function updateTimings() {
       const now = new Date();
       const currentMin = now.getHours() * 60 + now.getMinutes();
@@ -212,7 +211,6 @@
     updateTimings();
     setInterval(updateTimings, 1000);
 
-    // إرسال الطلب
     async function submitStudentOrder() {
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
@@ -221,7 +219,7 @@
       const shiftRadio = document.querySelector('input[name="deliveryShift"]:checked');
       const selectedShift = shiftRadio ? shiftRadio.value : "5:00 عصراً";
       const now = new Date();
-      const timeFormatted = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
       const newOrder = {
         name: document.getElementById('studentName').value.trim(),
@@ -262,7 +260,6 @@
       document.getElementById('orderForm').classList.remove('hidden');
     }
 
-    // اللجنة والدخول السري
     function openPinModal() {
       document.getElementById('pinInput').value = "";
       document.getElementById('pinError').classList.add('hidden');
@@ -333,7 +330,7 @@
 
     function renderAdminOrders() {
       const list = getOrdersList();
-      document.getElementById('orderCountText').innerText = "إجمالي الطلبات المعروضة: " + list.length + " (من أصل " + loadedOrders.length + ")";
+      document.getElementById('orderCountText').innerText = "إجمالي الطلبات المعروضة " + list.length + " (من أصل " + loadedOrders.length + ")";
       document.getElementById('previewBox').innerText = generateSupermarketText();
 
       const container = document.getElementById('studentsList');
@@ -341,7 +338,9 @@
       list.forEach((ord, idx) => {
         const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
         const waLink = phone.startsWith('01') ? "https://wa.me/2" + phone : "https://wa.me/" + phone;
-        const timeDisplay = ord.orderTime || "";
+        const timeDisplay = ord.createdAt 
+          ? new Date(ord.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) 
+          : (ord.orderTime || "");
         const shiftTag = ord.shift || "5:00 عصراً";
 
         const item = document.createElement('div');
@@ -351,7 +350,7 @@
             <div class="flex items-center gap-2">
               <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
-              ${timeDisplay ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
+              ${timeDisplay ? `<span dir="ltr" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
             </div>
             <div class="text-slate-400 mt-0.5">${ord.room}</div>
           </div>
