@@ -36,7 +36,7 @@
     </div>
 
     <!-- استمارة الطالب -->
-    <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); window.submitStudentOrder();">
+    <form id="orderForm" class="space-y-4">
       
       <!-- اختيار فترة الاستلام -->
       <div>
@@ -105,14 +105,14 @@
       <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
       <h3 class="font-bold text-lg text-emerald-400">تم تسجيل طلبك بنجاح!</h3>
       <p class="text-xs text-slate-400" id="successShiftNotice">سيتم تجهيز طلبك في موعد الدفعة المحددة.</p>
-      <button type="button" onclick="window.resetFormView()" class="text-xs text-emerald-400 underline hover:text-emerald-300">تسجيل طلب آخر</button>
+      <button type="button" id="resetFormBtn" class="text-xs text-emerald-400 underline hover:text-emerald-300">تسجيل طلب آخر</button>
     </div>
 
   </div>
 
   <!-- زر الوصول السري للجنة -->
   <div class="text-center py-4">
-    <button type="button" onclick="window.openPinModal()" class="text-xs text-slate-500 hover:text-slate-400 transition underline">
+    <button type="button" id="openPinBtn" class="text-xs text-slate-500 hover:text-slate-400 transition underline">
       كشف إدارة اللجنة
     </button>
   </div>
@@ -125,8 +125,8 @@
              class="w-full text-center tracking-widest text-xl py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500">
       <p id="pinError" class="text-rose-400 text-xs hidden">الرمز السري غير صحيح</p>
       <div class="flex gap-2">
-        <button type="button" onclick="window.verifyPin()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm">دخول</button>
-        <button type="button" onclick="window.closePinModal()" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm">إلغاء</button>
+        <button type="button" id="confirmPinBtn" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm">دخول</button>
+        <button type="button" id="cancelPinBtn" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm">إلغاء</button>
       </div>
     </div>
   </div>
@@ -140,18 +140,18 @@
           <h2 class="font-extrabold text-white text-lg">لوحة طلبات اللجنة</h2>
           <span id="orderCountText" class="text-xs text-emerald-400">جارٍ جلب الطلبات...</span>
         </div>
-        <button type="button" onclick="window.closeAdminModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+        <button type="button" id="closeAdminBtnTop" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
       <!-- فلترة عرض الطلبات حسب الفترة -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-        <button type="button" onclick="window.changeAdminFilter('ALL')" id="filterAllBtn" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
-        <button type="button" onclick="window.changeAdminFilter('5PM')" id="filter5Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
-        <button type="button" onclick="window.changeAdminFilter('10PM')" id="filter10Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
+        <button type="button" id="filterAllBtn" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
+        <button type="button" id="filter5Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
+        <button type="button" id="filter10Btn" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
       </div>
 
       <!-- زر نسخ الرسالة للسوبرماركت مباشرة -->
-      <button type="button" onclick="window.copySupermarketMessage()" 
+      <button type="button" id="copyBtn" 
               class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
         <span id="copyBtnText">نسخ رسالة السوبرماركت للفترة المختارة</span>
       </button>
@@ -169,8 +169,8 @@
       </div>
 
       <div class="flex justify-between items-center pt-3 border-t border-slate-700/80">
-        <button type="button" onclick="window.clearAllOrders()" class="text-xs text-rose-400 hover:text-rose-300 underline">مسح كل الطلبات لبدء فترة جديدة</button>
-        <button type="button" onclick="window.closeAdminModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl">إغلاق</button>
+        <button type="button" id="clearAllBtn" class="text-xs text-rose-400 hover:text-rose-300 underline">مسح كل الطلبات لبدء فترة جديدة</button>
+        <button type="button" id="closeAdminBtnBottom" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl">إغلاق</button>
       </div>
 
     </div>
@@ -186,8 +186,11 @@
       const now = new Date();
       const currentTotalMin = now.getHours() * 60 + now.getMinutes();
 
-      const isShift5Closed = (currentTotalMin >= 16 * 60 + 30 && currentTotalMin < 17 * 60);
-      const isShift10Closed = (currentTotalMin >= 21 * 60 + 30 && currentTotalMin < 22 * 60);
+      // غلق فترة 5 فقط من 4:30 م إلى 5:00 م (من دقيقة 990 إلى 1020)
+      const isShift5Closed = (currentTotalMin >= 990 && currentTotalMin < 1020);
+      
+      // غلق فترة 10 فقط من 9:30 م إلى 10:00 م (من دقيقة 1290 إلى 1320)
+      const isShift10Closed = (currentTotalMin >= 1290 && currentTotalMin < 1320);
 
       const radio5 = document.getElementById('shift5Radio');
       const radio10 = document.getElementById('shift10Radio');
@@ -225,10 +228,10 @@
       let nextCloseDate = new Date();
       let shiftLabel = "";
 
-      if (currentTotalMin < 16 * 60 + 30) {
+      if (currentTotalMin < 990) {
         shiftLabel = "فترة 5:00 عصراً (قفل 4:30)";
         nextCloseDate.setHours(16, 30, 0, 0);
-      } else if (currentTotalMin < 21 * 60 + 30) {
+      } else if (currentTotalMin < 1290) {
         shiftLabel = "فترة 10:00 مساءً (قفل 9:30)";
         nextCloseDate.setHours(21, 30, 0, 0);
       } else {
@@ -237,8 +240,8 @@
         nextCloseDate.setHours(16, 30, 0, 0);
       }
 
-      const shiftTitleEl = document.getElementById('shiftTitleDisplay');
-      if (shiftTitleEl) shiftTitleEl.innerText = shiftLabel;
+      const titleEl = document.getElementById('shiftTitleDisplay');
+      if (titleEl) titleEl.innerText = shiftLabel;
 
       const diffSec = Math.max(0, Math.floor((nextCloseDate - now) / 1000));
       const hours = String(Math.floor(diffSec / 3600)).padStart(2, '0');
@@ -249,10 +252,13 @@
       if (timerEl) timerEl.innerText = `${hours}:${minutes}:${seconds}`;
     }
 
+    // تشغيل العداد فوراً
     updateTimings();
     setInterval(updateTimings, 1000);
 
-    window.submitStudentOrder = async function() {
+    // تسجيل الطلب
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerText = "جارٍ الإرسال...";
@@ -290,40 +296,41 @@
           alert("حدث خطأ في الاتصال بالسيرفر.");
         }
       } catch (err) {
-        alert("تعذر إرسال الطلب، تأكد من الاتصال بالإنترنت.");
+        alert("تعذر إرسال الطلب، تأكد من اتصال الإنترنت.");
       } finally {
         btn.disabled = false;
         btn.innerText = "إرسال الطلب (Submit)";
       }
-    };
+    });
 
-    window.resetFormView = function() {
+    document.getElementById('resetFormBtn').addEventListener('click', () => {
       document.getElementById('successBox').classList.add('hidden');
       document.getElementById('orderForm').classList.remove('hidden');
       updateTimings();
-    };
+    });
 
-    window.openPinModal = function() {
+    // إدارة اللجنة والـ PIN
+    document.getElementById('openPinBtn').addEventListener('click', () => {
       document.getElementById('pinInput').value = "";
       document.getElementById('pinError').classList.add('hidden');
       document.getElementById('pinModal').classList.remove('hidden');
-    };
+    });
 
-    window.closePinModal = function() {
+    document.getElementById('cancelPinBtn').addEventListener('click', () => {
       document.getElementById('pinModal').classList.add('hidden');
-    };
+    });
 
-    window.verifyPin = function() {
+    document.getElementById('confirmPinBtn').addEventListener('click', () => {
       const pin = document.getElementById('pinInput').value.trim();
       if (pin === COMMITTEE_PIN) {
-        window.closePinModal();
-        window.openAdminDashboard();
+        document.getElementById('pinModal').classList.add('hidden');
+        openAdminDashboard();
       } else {
         document.getElementById('pinError').classList.remove('hidden');
       }
-    };
+    });
 
-    window.openAdminDashboard = async function() {
+    async function openAdminDashboard() {
       document.getElementById('adminModal').classList.remove('hidden');
       document.getElementById('orderCountText').innerText = "جارٍ جلب البيانات...";
 
@@ -340,13 +347,14 @@
       } catch (err) {
         document.getElementById('orderCountText').innerText = "خطأ في جلب الطلبات";
       }
-    };
+    }
 
-    window.closeAdminModal = function() {
-      document.getElementById('adminModal').classList.add('hidden');
-    };
+    const closeAdmin = () => document.getElementById('adminModal').classList.add('hidden');
+    document.getElementById('closeAdminBtnTop').addEventListener('click', closeAdmin);
+    document.getElementById('closeAdminBtnBottom').addEventListener('click', closeAdmin);
 
-    window.changeAdminFilter = function(filter) {
+    // فلاتر اللجنة
+    function setFilter(filter) {
       currentAdminFilter = filter;
       const allBtn = document.getElementById('filterAllBtn');
       const f5Btn = document.getElementById('filter5Btn');
@@ -361,7 +369,11 @@
       if (filter === '10PM') f10Btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white";
 
       renderAdminOrders();
-    };
+    }
+
+    document.getElementById('filterAllBtn').addEventListener('click', () => setFilter('ALL'));
+    document.getElementById('filter5Btn').addEventListener('click', () => setFilter('5PM'));
+    document.getElementById('filter10Btn').addEventListener('click', () => setFilter('10PM'));
 
     function getFilteredOrders() {
       if (currentAdminFilter === 'ALL') return loadedOrders;
@@ -387,12 +399,4 @@
       document.getElementById('orderCountText').innerText = `إجمالي الطلبات: ${filtered.length} (من أصل ${loadedOrders.length})`;
       document.getElementById('previewBox').innerText = generateSupermarketText();
 
-      const listContainer = document.getElementById('studentsList');
-      listContainer.innerHTML = "";
-      filtered.forEach((ord, idx) => {
-        const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
-        const waLink = phone.startsWith('01') ? `https://wa.me/2${phone}` : `https://wa.me/${phone}`;
-        const timeDisplay = ord.orderTime || (ord.createdAt ? new Date(ord.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : '');
-        const shiftTag = ord.shift === "10PM" ? "10 مساءً" : "5 عصراً";
-
-        const item = docume
+      const listContainer = document.getElementById('studentsL
