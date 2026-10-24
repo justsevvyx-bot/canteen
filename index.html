@@ -38,19 +38,19 @@
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
         <div class="grid grid-cols-2 gap-3">
-          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+          <label id="labelShift5" class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
             <input type="radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">5:00 عصراً</span>
-              <span class="text-[11px] text-slate-400">يقفل 4:30 م</span>
+              <span id="sub5" class="text-[11px] text-slate-400">يقفل 4:30 م</span>
             </div>
           </label>
 
-          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+          <label id="labelShift10" class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
             <input type="radio" name="deliveryShift" value="10:00 مساءً" class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">10:00 مساءً</span>
-              <span class="text-[11px] text-slate-400">يقفل 9:30 م</span>
+              <span id="sub10" class="text-[11px] text-slate-400">يقفل 9:30 م</span>
             </div>
           </label>
         </div>
@@ -217,20 +217,32 @@
       document.getElementById('countdownText').innerText = hours + ":" + minutes + ":" + seconds;
 
       try {
-        const radios = document.querySelectorAll('input[name="deliveryShift"]');
-        if (radios.length === 2) {
-          const r5 = radios[0];
-          const r10 = radios[1];
-          const close5 = (currentMin >= 16 * 60 + 30 && currentMin < 17 * 60);
-          const close10 = (currentMin >= 21 * 60 + 30 && currentMin < 22 * 60);
+        const r5 = document.getElementById('shift5Radio');
+        const r10 = document.getElementById('shift10Radio');
+        const lbl5 = document.getElementById('labelShift5');
+        const lbl10 = document.getElementById('labelShift10');
+        const sub5 = document.getElementById('sub5');
+        const sub10 = document.getElementById('sub10');
 
+        // فترة 5 تقفل من 4:30 م (990) إلى 6:00 م (360 دقيقة)
+        const close5 = (currentMin >= 990 && currentMin < 18 * 60);
+        // فترة 10 تقفل من 9:30 م (1290) إلى 11:00 م (1380)
+        const close10 = (currentMin >= 1290 && currentMin < 23 * 60);
+
+        if (r5 && lbl5 && sub5) {
           r5.disabled = close5;
           if (close5 && r5.checked) r10.checked = true;
-          if (r5.parentElement) r5.parentElement.style.opacity = close5 ? "0.4" : "1";
+          lbl5.style.opacity = close5 ? "0.4" : "1";
+          lbl5.style.pointerEvents = close5 ? "none" : "auto";
+          sub5.innerText = close5 ? "مغلقة حالياً (تفتح 6:00 م)" : "يقفل 4:30 م";
+        }
 
+        if (r10 && lbl10 && sub10) {
           r10.disabled = close10;
           if (close10 && r10.checked) r5.checked = true;
-          if (r10.parentElement) r10.parentElement.style.opacity = close10 ? "0.4" : "1";
+          lbl10.style.opacity = close10 ? "0.4" : "1";
+          lbl10.style.pointerEvents = close10 ? "none" : "auto";
+          sub10.innerText = close10 ? "مغلقة حالياً (تفتح 11:00 م)" : "يقفل 9:30 م";
         }
       } catch (e) {}
     }
