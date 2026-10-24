@@ -12,7 +12,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col justify-between">
 
-  <!-- صندوق الطلب الرئيسي -->
   <div class="w-full max-w-lg mx-auto bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto">
     
     <div class="text-center space-y-2">
@@ -23,7 +22,6 @@
       <h1 class="text-2xl sm:text-3xl font-extrabold text-white">تسجيل طلب السوبرماركت</h1>
     </div>
 
-    <!-- تايمر موحد وبسيط -->
     <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between">
       <div>
         <span class="text-slate-400 block text-xs">أقرب موعد قفل قادم</span>
@@ -35,10 +33,8 @@
       </div>
     </div>
 
-    <!-- استمارة الطالب -->
     <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
-      <!-- اختيار فترة الاستلام -->
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
         <div class="grid grid-cols-2 gap-3">
@@ -46,7 +42,7 @@
             <input type="radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">5:00 عصراً</span>
-              <span class="shift-subtext text-[11px] text-slate-400">يقفل 4:30 م</span>
+              <span class="text-[11px] text-slate-400">يقفل 4:30 م</span>
             </div>
           </label>
 
@@ -54,13 +50,12 @@
             <input type="radio" name="deliveryShift" value="10:00 مساءً" class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">10:00 مساءً</span>
-              <span class="shift-subtext text-[11px] text-slate-400">يقفل 9:30 م</span>
+              <span class="text-[11px] text-slate-400">يقفل 9:30 م</span>
             </div>
           </label>
         </div>
       </div>
 
-      <!-- اختيار السكن (ولاد / بنات) -->
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر السكن</label>
         <div class="grid grid-cols-2 gap-3">
@@ -114,7 +109,6 @@
 
     </form>
 
-    <!-- شاشة تأكيد النجاح بعد إرسال الطلب -->
     <div id="successBox" class="hidden p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center space-y-3">
       <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
       <h3 class="font-bold text-lg text-emerald-400">تم تسجيل طلبك بنجاح!</h3>
@@ -124,14 +118,12 @@
 
   </div>
 
-  <!-- زر الوصول السري للجنة -->
   <div class="text-center py-4">
     <button type="button" onclick="openPinModal()" class="text-xs text-slate-500 hover:text-slate-400 transition underline">
       كشف إدارة اللجنة
     </button>
   </div>
 
-  <!-- نافذة الرمز السري (PIN) -->
   <div id="pinModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-xs space-y-4 text-center">
       <h3 class="font-bold text-white text-lg">دخول مسؤولي اللجنة</h3>
@@ -145,7 +137,6 @@
     </div>
   </div>
 
-  <!-- لوحة تحكم اللجنة ونسخ رسالة الواتساب -->
   <div id="adminModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] flex flex-col space-y-4 text-right">
       
@@ -157,33 +148,28 @@
         <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
-      <!-- فلاتر الفترات -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
         <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
         <button type="button" onclick="setAdminFilter('5:00 عصراً')" id="flt5" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
         <button type="button" onclick="setAdminFilter('10:00 مساءً')" id="flt10" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
       </div>
 
-      <!-- فلاتر السكن -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
         <button type="button" onclick="setDormFilter('ALL')" id="dormAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">كل السكن</button>
         <button type="button" onclick="setDormFilter('ولاد')" id="dormBoys" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">سكن الولاد</button>
         <button type="button" onclick="setDormFilter('بنات')" id="dormGirls" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">سكن البنات</button>
       </div>
 
-      <!-- زر نسخ الرسالة للسوبرماركت -->
       <button type="button" onclick="copySupermarketMessage()" 
               class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
         <span id="copyBtnText">نسخ رسالة السوبرماركت</span>
       </button>
 
-      <!-- نص الرسالة المنسوخة النظيفة للسوبرماركت -->
       <div class="space-y-1">
         <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت</label>
         <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-44 overflow-y-auto"></pre>
       </div>
 
-      <!-- كشف التسليم الداخلي للجنة -->
       <div class="space-y-1 pt-2">
         <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل</label>
         <div id="studentsList" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
@@ -196,8 +182,7 @@
 
     </div>
   </div>
-
-  <script>
+    <script>
     const FIREBASE_DB_URL = "https://supermarket-438b0-default-rtdb.firebaseio.com/";
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
@@ -231,7 +216,6 @@
       document.getElementById('nextShiftText').innerText = shiftText;
       document.getElementById('countdownText').innerText = hours + ":" + minutes + ":" + seconds;
 
-      // قفل الفترة المنتهية بأمان بدون التأثير على التايمر
       try {
         const radios = document.querySelectorAll('input[name="deliveryShift"]');
         if (radios.length === 2) {
@@ -361,12 +345,9 @@
 
     function setDormFilter(d) {
       currentDormFilter = d;
-      const dAll = document.getElementById('dormAll');
-      const dBoys = document.getElementById('dormBoys');
-      const dGirls = document.getElementById('dormGirls');
-      if (dAll) dAll.className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
-      if (dBoys) dBoys.className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'ولاد' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
-      if (dGirls) dGirls.className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'بنات' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('dormAll').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('dormBoys').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'ولاد' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('dormGirls').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (d === 'بنات' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
       renderAdminOrders();
     }
 
@@ -392,4 +373,94 @@
       const body = list.map((ord, idx) => {
         const lines = ord.items.split('\n').filter(l => l.trim() !== "");
         const formattedItems = lines.map(l => "- " + l.trim()).join('\n');
-        const dormNote = (currentDormFilter === 'ALL') ? " (سكن " + (o
+        const dormNote = (currentDormFilter === 'ALL') ? " (سكن " + (ord.dorm || "ولاد") + ")" : "";
+        let block = (idx + 1) + dormNote + "-\n" + formattedItems;
+        if (ord.notes) block += "\n- ملاحظة: " + ord.notes;
+        block += "\n- الحساب: ";
+        return block;
+      }).join('\n\n');
+
+      return header + body;
+    }
+
+    function renderAdminOrders() {
+      const list = getOrdersList();
+      document.getElementById('orderCountText').innerText = "إجمالي الطلبات المعروضة " + list.length + " (من أصل " + loadedOrders.length + ")";
+      document.getElementById('previewBox').innerText = generateSupermarketText();
+
+      const container = document.getElementById('studentsList');
+      container.innerHTML = "";
+      list.forEach((ord, idx) => {
+        const phone = ord.whatsapp ? ord.whatsapp.replace(/[^0-9]/g, '') : '';
+        const waLink = phone.startsWith('01') ? "https://wa.me/2" + phone : "https://wa.me/" + phone;
+        const timeDisplay = ord.createdAt 
+          ? new Date(ord.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) 
+          : (ord.orderTime || "");
+        const shiftTag = ord.shift || "5:00 عصراً";
+        const dormTag = "سكن " + (ord.dorm || "ولاد");
+
+        const item = document.createElement('div');
+        item.className = "p-3 bg-slate-900 rounded-xl border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs";
+        item.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-amber-400 font-bold border border-slate-700">${dormTag}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
+              ${timeDisplay ? `<span dir="ltr" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
+            </div>
+            <div class="text-slate-400">${ord.room}</div>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
+            ${phone ? `
+              <a href="${waLink}" target="_blank" class="px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-bold rounded-lg flex items-center gap-1 transition">
+                <span>واتساب</span>
+              </a>
+            ` : '<span class="text-slate-500">بدون رقم</span>'}
+            <button onclick="deleteSingleOrder('${ord.id}')" class="px-2.5 py-1.5 bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/40 text-rose-300 font-bold rounded-lg transition" title="حذف الطلب">
+              ✕
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    async function deleteSingleOrder(orderId) {
+      if (!confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
+      try {
+        const res = await fetch(FIREBASE_DB_URL + "orders/" + orderId + ".json", {
+          method: "DELETE"
+        });
+        if (res.ok) {
+          openAdminDashboard();
+        } else {
+          alert("فشل حذف الطلب.");
+        }
+      } catch (err) {
+        alert("حدث خطأ أثناء الحذف.");
+      }
+    }
+
+    function copySupermarketMessage() {
+      const text = generateSupermarketText();
+      navigator.clipboard.writeText(text).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerText = "تم نسخ الرسالة بنجاح! ✓";
+        setTimeout(() => btnText.innerText = "نسخ رسالة السوبرماركت", 2000);
+      });
+    }
+
+    async function clearAllOrders() {
+      if (!confirm("هل أنت متأكد من مسح جميع الطلبات الحالية لبدء فترة جديدة؟")) return;
+      try {
+        await fetch(FIREBASE_DB_URL + "orders.json", { method: "DELETE" });
+        loadedOrders = [];
+        renderAdminOrders();
+      } catch (err) {
+        alert("فشل مسح الطلبات.");
+      }
+    }
+  </script>
+</body>
+</html>
