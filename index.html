@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STEM delivery</title>
+  <title>هاتلي | Hatly</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -17,9 +17,9 @@
     <div class="text-center space-y-2">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        توصيل السوبرماركت للسكن (فترتي 5:00 م و 10:00 م)
+        فترتي 5:00 م و 10:00 م
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-white">تسجيل طلب السوبرماركت</h1>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white">هاتلي | Hatly</h1>
     </div>
 
     <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between">
@@ -39,7 +39,7 @@
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
         <div class="grid grid-cols-2 gap-3">
           <label id="labelShift5" class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
-            <input type="radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
+            <input type="radio" id="shift5Radio" name="deliveryShift" value="5:00 عصراً" checked class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">5:00 عصراً</span>
               <span id="sub5" class="text-[11px] text-slate-400">يقفل 4:30 م</span>
@@ -47,7 +47,7 @@
           </label>
 
           <label id="labelShift10" class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
-            <input type="radio" name="deliveryShift" value="10:00 مساءً" class="text-emerald-500 focus:ring-0">
+            <input type="radio" id="shift10Radio" name="deliveryShift" value="10:00 مساءً" class="text-emerald-500 focus:ring-0">
             <div>
               <span class="font-bold text-sm text-white block">10:00 مساءً</span>
               <span id="sub10" class="text-[11px] text-slate-400">يقفل 9:30 م</span>
@@ -181,8 +181,8 @@
       </div>
 
     </div>
-  </div>
-    <script>
+        </div>
+          <script>
     const FIREBASE_DB_URL = "https://supermarket-438b0-default-rtdb.firebaseio.com/";
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
@@ -224,9 +224,7 @@
         const sub5 = document.getElementById('sub5');
         const sub10 = document.getElementById('sub10');
 
-        // فترة 5 تقفل من 4:30 م (990) إلى 6:00 م (360 دقيقة)
         const close5 = (currentMin >= 990 && currentMin < 18 * 60);
-        // فترة 10 تقفل من 9:30 م (1290) إلى 11:00 م (1380)
         const close10 = (currentMin >= 1290 && currentMin < 23 * 60);
 
         if (r5 && lbl5 && sub5) {
