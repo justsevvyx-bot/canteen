@@ -12,11 +12,11 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col justify-between">
 
-  <div class="w-full max-w-lg mx-auto bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto">
+  <div id="mainCard" class="w-full max-w-lg mx-auto bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto transition-colors duration-300">
     
     <div class="text-center space-y-2">
-      <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <div id="topBadgeContainer" class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold transition-colors duration-300">
+        <span id="topBadgeDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span id="topScheduleBadge">فترتي 5:00 م و 10:00 م</span>
       </div>
       <h1 class="text-2xl sm:text-3xl font-extrabold text-white">هاتلي | Hatly</h1>
@@ -40,10 +40,10 @@
     </div>
 
     <!-- التايمر الموحد -->
-    <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between">
+    <div id="timerBox" class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between transition-colors duration-300">
       <div>
         <span class="text-slate-400 block text-xs">أقرب موعد قفل قادم</span>
-        <span id="nextShiftText" class="font-bold text-emerald-400 text-sm sm:text-base">جارٍ الحساب...</span>
+        <span id="nextShiftText" class="font-bold text-emerald-400 text-sm sm:text-base transition-colors duration-300">جارٍ الحساب...</span>
       </div>
       <div class="text-left">
         <span class="text-slate-400 block text-xs">متبقي</span>
@@ -52,13 +52,12 @@
     </div>
 
     <!-- شاشة قسم المكتبة (غير متاح حالياً) -->
-    <div id="libraryUnavailableBox" class="hidden p-8 bg-slate-900/90 border border-slate-700 rounded-2xl text-center space-y-3">
+    <div id="libraryUnavailableBox" class="hidden p-8 bg-slate-900/90 border border-violet-500/30 rounded-2xl text-center space-y-3">
       <div class="text-4xl">📚</div>
-      <h3 class="font-extrabold text-lg text-amber-400">قسم المكتبة غير متاح حالياً</h3>
-      <p class="text-xs text-slate-400 leading-relaxed">سيتم تفعيل طلبات المكتبة قريباً (بفترة يومية موحدة الساعة 8:30 مساءً). يمكنك حالياً الطلب من قسم السوبرماركت أو الصيدلية.</p>
+      <h3 class="font-extrabold text-lg text-violet-400">قسم المكتبة غير متاح حالياً</h3>
+      <p class="text-xs text-slate-400 leading-relaxed">سيتم تفعيل طلبات المكتبة والأدوات الدراسية قريباً (بموعد استلام يومي الساعة 8:30 مساءً). يمكنك حالياً الطلب من قسم السوبرماركت أو الصيدلية.</p>
     </div>
-
-    <!-- استمارة الطلب -->
+        <!-- استمارة الطلب -->
     <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
       <!-- فترات السوبرماركت (5:00 م و 10:00 م) -->
@@ -83,30 +82,30 @@
         </div>
       </div>
 
-      <!-- الفترة الإجبارية للصيدلية والمكتبة (8:30 مساءً) -->
+      <!-- موعد استلام الصيدلية والمكتبة (8:30 مساءً) -->
       <div id="singleShift830Box" class="hidden">
-        <label class="block text-sm font-semibold text-slate-300 mb-2">فترة الاستلام (فترة واحدة إجبارية)</label>
-        <div id="labelShift830" class="flex items-center justify-between p-3.5 bg-slate-900 border border-emerald-500/50 rounded-xl">
+        <label class="block text-sm font-semibold text-slate-300 mb-2">موعد الاستلام</label>
+        <div id="labelShift830" class="flex items-center justify-between p-3.5 bg-slate-900 border border-cyan-500/40 rounded-xl">
           <div class="flex items-center gap-2.5">
-            <input type="radio" checked disabled class="text-emerald-500 focus:ring-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
             <div>
-              <span class="font-bold text-sm text-white block">8:30 مساءً (فترة موحدة)</span>
-              <span id="sub830" class="text-[11px] text-slate-400">يقفل 8:00 م</span>
+              <span class="font-bold text-sm text-white block">8:30 مساءً</span>
+              <span id="sub830" class="text-[11px] text-slate-400">يقفل التسجيل 8:00 م</span>
             </div>
           </div>
-          <span class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">إجباري</span>
+          <span class="text-[11px] px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 font-bold border border-cyan-500/20">فترة المساء</span>
         </div>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر السكن</label>
         <div class="grid grid-cols-2 gap-3">
-          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-500 transition">
             <input type="radio" name="dormType" value="ولاد" checked class="text-emerald-500 focus:ring-0">
             <span class="font-bold text-sm text-white">سكن الولاد</span>
           </label>
 
-          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+          <label class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-500 transition">
             <input type="radio" name="dormType" value="بنات" class="text-emerald-500 focus:ring-0">
             <span class="font-bold text-sm text-white">سكن البنات</span>
           </label>
@@ -244,6 +243,12 @@
     let currentDormFilter = "ALL";
 
     function selectStudentCategory(cat) {
+      const mainCard = document.getElementById('mainCard');
+      const topBadgeContainer = document.getElementById('topBadgeContainer');
+      const topBadgeDot = document.getElementById('topBadgeDot');
+      const nextShiftText = document.getElementById('nextShiftText');
+      const timerBox = document.getElementById('timerBox');
+
       const tabSup = document.getElementById('catTabSupermarket');
       const tabPhm = document.getElementById('catTabPharmacy');
       const tabLib = document.getElementById('catTabLibrary');
@@ -253,16 +258,23 @@
       const supShifts = document.getElementById('supermarketShiftsBox');
       const single830 = document.getElementById('singleShift830Box');
       const topBadge = document.getElementById('topScheduleBadge');
+      const btn = document.getElementById('submitBtn');
 
-      tabSup.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'سوبرماركت' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
-      tabPhm.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'صيدلية' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
-      tabLib.className = "py-2 px-2 rounded-xl font-bold text-xs sm:text-sm transition flex flex-col items-center justify-center leading-tight " + (cat === 'مكتبة' ? "bg-slate-800 text-amber-400 border border-amber-500/40" : "text-slate-400 hover:text-white");
+      tabSup.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'سوبرماركت' ? "bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20" : "text-slate-300 hover:text-white");
+      tabPhm.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'صيدلية' ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" : "text-slate-300 hover:text-white");
+      tabLib.className = "py-2 px-2 rounded-xl font-bold text-xs sm:text-sm transition flex flex-col items-center justify-center leading-tight " + (cat === 'مكتبة' ? "bg-violet-500/20 text-violet-300 border border-violet-500/40" : "text-slate-400 hover:text-white");
 
       succBox.classList.add('hidden');
 
       if (cat === 'مكتبة') {
         selectedStudentCategory = 'مكتبة';
-        topBadge.innerText = "فترة موحدة 8:30 مساءً";
+        mainCard.className = "w-full max-w-lg mx-auto bg-slate-800 border border-violet-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto transition-colors duration-300";
+        topBadgeContainer.className = "inline-flex items-center gap-2 px-3 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-300 rounded-full text-xs font-semibold transition-colors duration-300";
+        topBadgeDot.className = "w-2 h-2 rounded-full bg-violet-400 animate-pulse";
+        nextShiftText.className = "font-bold text-violet-400 text-sm sm:text-base transition-colors duration-300";
+        timerBox.className = "p-4 bg-slate-900/90 rounded-2xl border border-violet-500/20 flex items-center justify-between transition-colors duration-300";
+
+        topBadge.innerText = "موعد الاستلام 8:30 مساءً";
         formEl.classList.add('hidden');
         libBox.classList.remove('hidden');
         updateTimings();
@@ -276,30 +288,42 @@
       const lbl = document.getElementById('orderItemsLabel');
       const txt = document.getElementById('orderItems');
       const notes = document.getElementById('orderNotes');
-      const btn = document.getElementById('submitBtn');
 
       if (cat === 'صيدلية') {
-        topBadge.innerText = "فترة موحدة 8:30 مساءً";
+        mainCard.className = "w-full max-w-lg mx-auto bg-slate-800 border border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto transition-colors duration-300";
+        topBadgeContainer.className = "inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded-full text-xs font-semibold transition-colors duration-300";
+        topBadgeDot.className = "w-2 h-2 rounded-full bg-cyan-400 animate-pulse";
+        nextShiftText.className = "font-bold text-cyan-400 text-sm sm:text-base transition-colors duration-300";
+        timerBox.className = "p-4 bg-slate-900/90 rounded-2xl border border-cyan-500/20 flex items-center justify-between transition-colors duration-300";
+
+        topBadge.innerText = "موعد الاستلام 8:30 مساءً";
         supShifts.classList.add('hidden');
         single830.classList.remove('hidden');
         lbl.innerText = "طلبات الصيدلية / الأدوية بالتفصيل والكميات";
         txt.placeholder = "مثال\n1 شريط بنادول إكسترا\n1 بلاستر طبي";
         notes.placeholder = "مثال لو الدواء مش موجود هات المثيل";
+        btn.className = "w-full py-3.5 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition duration-150";
         btn.innerText = "إرسال طلب الصيدلية (Submit)";
       } else {
+        mainCard.className = "w-full max-w-lg mx-auto bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-auto transition-colors duration-300";
+        topBadgeContainer.className = "inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold transition-colors duration-300";
+        topBadgeDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+        nextShiftText.className = "font-bold text-emerald-400 text-sm sm:text-base transition-colors duration-300";
+        timerBox.className = "p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between transition-colors duration-300";
+
         topBadge.innerText = "فترتي 5:00 م و 10:00 م";
         supShifts.classList.remove('hidden');
         single830.classList.add('hidden');
         lbl.innerText = "طلبات السوبرماركت بالتفصيل والكميات";
         txt.placeholder = "مثال\n2 كيس شيبسي بالجبنة كبير\n1 عصير جهينة مانجو";
         notes.placeholder = "مثال لو الحجم الكبير مش موجود هات الوسط";
+        btn.className = "w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition duration-150";
         btn.innerText = "إرسال طلب السوبرماركت (Submit)";
       }
 
       updateTimings();
     }
-
-    function updateTimings() {
+          function updateTimings() {
       const now = new Date();
       const currentMin = now.getHours() * 60 + now.getMinutes();
 
@@ -307,7 +331,6 @@
       let shiftText = "";
 
       if (selectedStudentCategory === 'صيدلية' || selectedStudentCategory === 'مكتبة') {
-        // فترة 8:30 مساءً تقفل 8:00 م (1200 دقيقة) وتفتح للغد 9:30 م (1290 دقيقة)
         if (currentMin < 20 * 60) {
           shiftText = "فترة 8:30 مساءً (قفل 8:00 م)";
           targetDate.setHours(20, 0, 0, 0);
@@ -370,7 +393,7 @@
 
         if (sub830 && lbl830) {
           lbl830.style.opacity = close830 ? "0.5" : "1";
-          sub830.innerText = close830 ? "مغلقة للتجهيز (تفتح 9:30 م لطلبات الغد)" : "يقفل 8:00 م";
+          sub830.innerText = close830 ? "مغلقة للتجهيز (تفتح 9:30 م لطلبات الغد)" : "يقفل التسجيل 8:00 م";
         }
       } catch (e) {}
     }
@@ -491,8 +514,8 @@
     function setAdminCategory(c) {
       currentAdminCategory = c;
       document.getElementById('admCatSupermarket').className = "py-2 rounded-lg text-xs font-bold " + (c === 'سوبرماركت' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
-      document.getElementById('admCatPharmacy').className = "py-2 rounded-lg text-xs font-bold " + (c === 'صيدلية' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
-      document.getElementById('admCatAll').className = "py-2 rounded-lg text-xs font-bold " + (c === 'ALL' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
+      document.getElementById('admCatPharmacy').className = "py-2 rounded-lg text-xs font-bold " + (c === 'صيدلية' ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white");
+      document.getElementById('admCatAll').className = "py-2 rounded-lg text-xs font-bold " + (c === 'ALL' ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white");
 
       const copyTxt = document.getElementById('copyBtnText');
       if (c === 'سوبرماركت') copyTxt.innerText = "نسخ رسالة السوبرماركت";
@@ -577,7 +600,7 @@
           <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 font-bold border border-sky-500/20">${catTag}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 font-bold border border-cyan-500/20">${catTag}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-amber-400 font-bold border border-slate-700">${dormTag}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
               ${timeDisplay ? `<span dir="ltr" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
