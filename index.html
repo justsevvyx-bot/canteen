@@ -22,6 +22,24 @@
       <h1 class="text-2xl sm:text-3xl font-extrabold text-white">هاتلي | Hatly</h1>
     </div>
 
+    <!-- شريط الأقسام الرئيسية -->
+    <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl border border-slate-700">
+      <button type="button" id="catTabSupermarket" onclick="selectStudentCategory('سوبرماركت')"
+              class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition bg-emerald-500 text-slate-950 shadow-lg">
+        🛒 السوبرماركت
+      </button>
+      <button type="button" id="catTabPharmacy" onclick="selectStudentCategory('صيدلية')"
+              class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition text-slate-300 hover:text-white">
+        💊 الصيدلية
+      </button>
+      <button type="button" id="catTabLibrary" onclick="selectStudentCategory('مكتبة')"
+              class="py-2 px-2 rounded-xl font-bold text-xs sm:text-sm transition text-slate-400 hover:text-white flex flex-col items-center justify-center leading-tight">
+        <span>📚 المكتبة</span>
+        <span class="text-[9px] text-amber-400 font-semibold mt-0.5">غير متاح حالياً</span>
+      </button>
+    </div>
+
+    <!-- التايمر الموحد -->
     <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 flex items-center justify-between">
       <div>
         <span class="text-slate-400 block text-xs">أقرب موعد قفل قادم</span>
@@ -33,6 +51,14 @@
       </div>
     </div>
 
+    <!-- شاشة قسم المكتبة (غير متاح حالياً) -->
+    <div id="libraryUnavailableBox" class="hidden p-8 bg-slate-900/90 border border-slate-700 rounded-2xl text-center space-y-3">
+      <div class="text-4xl">📚</div>
+      <h3 class="font-extrabold text-lg text-amber-400">قسم المكتبة غير متاح حالياً</h3>
+      <p class="text-xs text-slate-400 leading-relaxed">سيتم تفعيل طلبات المكتبة والأدوات الدراسية قريباً. يمكنك حالياً الطلب من قسم السوبرماركت أو الصيدلية.</p>
+    </div>
+
+    <!-- استمارة الطلب -->
     <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
       <div>
@@ -90,7 +116,7 @@
       </div>
 
       <div>
-        <label class="block text-sm font-semibold text-slate-300 mb-1.5">الأوردر بالتفصيل والكميات</label>
+        <label id="orderItemsLabel" class="block text-sm font-semibold text-slate-300 mb-1.5">طلبات السوبرماركت بالتفصيل والكميات</label>
         <textarea id="orderItems" required rows="4" 
                   placeholder="مثال&#10;2 كيس شيبسي بالجبنة كبير&#10;1 عصير جهينة مانجو" 
                   class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition text-sm leading-relaxed"></textarea>
@@ -104,7 +130,7 @@
 
       <button type="submit" id="submitBtn" 
               class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition duration-150">
-        إرسال الطلب (Submit)
+        إرسال طلب السوبرماركت (Submit)
       </button>
 
     </form>
@@ -138,9 +164,9 @@
   </div>
 
   <div id="adminModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] flex flex-col space-y-4 text-right">
+    <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-2xl max-h-[92vh] flex flex-col space-y-3.5 text-right">
       
-      <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-700">
         <div>
           <h2 class="font-extrabold text-white text-lg">لوحة طلبات اللجنة</h2>
           <span id="orderCountText" class="text-xs text-emerald-400">جارٍ جلب الطلبات...</span>
@@ -148,12 +174,21 @@
         <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
+      <!-- تبديل الأقسام داخل اللجنة -->
+      <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+        <button type="button" onclick="setAdminCategory('سوبرماركت')" id="admCatSupermarket" class="py-2 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950">🛒 السوبرماركت</button>
+        <button type="button" onclick="setAdminCategory('صيدلية')" id="admCatPharmacy" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">💊 الصيدلية</button>
+        <button type="button" onclick="setAdminCategory('ALL')" id="admCatAll" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">الكل</button>
+      </div>
+
+      <!-- فلاتر الفترات -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-        <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">الكل</button>
+        <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">كل الفترات</button>
         <button type="button" onclick="setAdminFilter('5:00 عصراً')" id="flt5" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
         <button type="button" onclick="setAdminFilter('10:00 مساءً')" id="flt10" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
       </div>
 
+      <!-- فلاتر السكن -->
       <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
         <button type="button" onclick="setDormFilter('ALL')" id="dormAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">كل السكن</button>
         <button type="button" onclick="setDormFilter('ولاد')" id="dormBoys" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">سكن الولاد</button>
@@ -161,33 +196,77 @@
       </div>
 
       <button type="button" onclick="copySupermarketMessage()" 
-              class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+              class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
         <span id="copyBtnText">نسخ رسالة السوبرماركت</span>
       </button>
 
       <div class="space-y-1">
-        <label class="text-xs font-semibold text-slate-400">نص الرسالة المنسوخة للسوبرماركت</label>
-        <pre id="previewBox" class="p-4 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-44 overflow-y-auto"></pre>
+        <label class="text-xs font-semibold text-slate-400">نص الرسالة الجاهزة للنسخ</label>
+        <pre id="previewBox" class="p-3.5 bg-slate-950 rounded-xl border border-slate-900 text-slate-200 text-xs font-mono whitespace-pre-wrap max-h-40 overflow-y-auto"></pre>
       </div>
 
-      <div class="space-y-1 pt-2">
+      <div class="space-y-1 pt-1">
         <label class="text-xs font-semibold text-slate-400">كشف الطلاب للتسليم والتواصل</label>
-        <div id="studentsList" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
+        <div id="studentsList" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
       </div>
 
-      <div class="flex justify-between items-center pt-3 border-t border-slate-700/80">
+      <div class="flex justify-between items-center pt-2 border-t border-slate-700/80">
         <button type="button" onclick="clearAllOrders()" class="text-xs text-rose-400 hover:text-rose-300 underline">مسح كل الطلبات لبدء فترة جديدة</button>
         <button type="button" onclick="closeAdminModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl">إغلاق</button>
       </div>
 
     </div>
-        </div>
-          <script>
+  </div>
+    <script>
     const FIREBASE_DB_URL = "https://supermarket-438b0-default-rtdb.firebaseio.com/";
     const COMMITTEE_PIN = "020260";
     let loadedOrders = [];
+    let selectedStudentCategory = "سوبرماركت";
+    let currentAdminCategory = "سوبرماركت";
     let currentFilter = "ALL";
     let currentDormFilter = "ALL";
+
+    function selectStudentCategory(cat) {
+      const tabSup = document.getElementById('catTabSupermarket');
+      const tabPhm = document.getElementById('catTabPharmacy');
+      const tabLib = document.getElementById('catTabLibrary');
+      const libBox = document.getElementById('libraryUnavailableBox');
+      const formEl = document.getElementById('orderForm');
+      const succBox = document.getElementById('successBox');
+
+      tabSup.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'سوبرماركت' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
+      tabPhm.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'صيدلية' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
+      tabLib.className = "py-2 px-2 rounded-xl font-bold text-xs sm:text-sm transition flex flex-col items-center justify-center leading-tight " + (cat === 'مكتبة' ? "bg-slate-800 text-amber-400 border border-amber-500/40" : "text-slate-400 hover:text-white");
+
+      succBox.classList.add('hidden');
+
+      if (cat === 'مكتبة') {
+        formEl.classList.add('hidden');
+        libBox.classList.remove('hidden');
+        return;
+      }
+
+      selectedStudentCategory = cat;
+      libBox.classList.add('hidden');
+      formEl.classList.remove('hidden');
+
+      const lbl = document.getElementById('orderItemsLabel');
+      const txt = document.getElementById('orderItems');
+      const notes = document.getElementById('orderNotes');
+      const btn = document.getElementById('submitBtn');
+
+      if (cat === 'صيدلية') {
+        lbl.innerText = "طلبات الصيدلية / الأدوية بالتفصيل والكميات";
+        txt.placeholder = "مثال\n1 شريط بنادول إكسترا\n1 بلاستر طبي";
+        notes.placeholder = "مثال لو الدواء مش موجود هات المثيل";
+        btn.innerText = "إرسال طلب الصيدلية (Submit)";
+      } else {
+        lbl.innerText = "طلبات السوبرماركت بالتفصيل والكميات";
+        txt.placeholder = "مثال\n2 كيس شيبسي بالجبنة كبير\n1 عصير جهينة مانجو";
+        notes.placeholder = "مثال لو الحجم الكبير مش موجود هات الوسط";
+        btn.innerText = "إرسال طلب السوبرماركت (Submit)";
+      }
+    }
 
     function updateTimings() {
       const now = new Date();
@@ -263,6 +342,7 @@
       const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
       const newOrder = {
+        category: selectedStudentCategory,
         name: document.getElementById('studentName').value.trim(),
         room: document.getElementById('roomNumber').value.trim(),
         whatsapp: document.getElementById('whatsappNumber').value.trim(),
@@ -283,7 +363,7 @@
 
         if (res.ok) {
           document.getElementById('orderForm').classList.add('hidden');
-          document.getElementById('successShiftNotice').innerText = "تم تسجيل طلبك بنجاح ضمن (" + selectedShift + " - سكن ال" + selectedDorm + ").";
+          document.getElementById('successShiftNotice').innerText = "تم تسجيل طلب (" + selectedStudentCategory + ") ضمن (" + selectedShift + " - سكن ال" + selectedDorm + ").";
           document.getElementById('successBox').classList.remove('hidden');
           document.getElementById('orderForm').reset();
           updateTimings();
@@ -294,7 +374,7 @@
         alert("تعذر إرسال الطلب، تأكد من اتصال الإنترنت.");
       } finally {
         btn.disabled = false;
-        btn.innerText = "إرسال الطلب (Submit)";
+        btn.innerText = selectedStudentCategory === 'صيدلية' ? "إرسال طلب الصيدلية (Submit)" : "إرسال طلب السوبرماركت (Submit)";
       }
     }
 
@@ -345,6 +425,20 @@
       document.getElementById('adminModal').classList.add('hidden');
     }
 
+    function setAdminCategory(c) {
+      currentAdminCategory = c;
+      document.getElementById('admCatSupermarket').className = "py-2 rounded-lg text-xs font-bold " + (c === 'سوبرماركت' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
+      document.getElementById('admCatPharmacy').className = "py-2 rounded-lg text-xs font-bold " + (c === 'صيدلية' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
+      document.getElementById('admCatAll').className = "py-2 rounded-lg text-xs font-bold " + (c === 'ALL' ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-white");
+
+      const copyTxt = document.getElementById('copyBtnText');
+      if (c === 'سوبرماركت') copyTxt.innerText = "نسخ رسالة السوبرماركت";
+      else if (c === 'صيدلية') copyTxt.innerText = "نسخ رسالة الصيدلية";
+      else copyTxt.innerText = "نسخ جميع الرسائل";
+
+      renderAdminOrders();
+    }
+
     function setAdminFilter(f) {
       currentFilter = f;
       document.getElementById('fltAll').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
@@ -363,6 +457,9 @@
 
     function getOrdersList() {
       let list = loadedOrders;
+      if (currentAdminCategory !== 'ALL') {
+        list = list.filter(o => (o.category || 'سوبرماركت') === currentAdminCategory);
+      }
       if (currentFilter !== 'ALL') {
         list = list.filter(o => (o.shift || '5:00 عصراً') === currentFilter);
       }
@@ -374,11 +471,11 @@
 
     function generateSupermarketText() {
       const list = getOrdersList();
-      if (list.length === 0) return "لا توجد طلبات مسجلة لهذه الفترة حالياً.";
+      if (list.length === 0) return "لا توجد طلبات مسجلة في هذا القسم حالياً.";
 
-      let header = "";
-      if (currentDormFilter === 'ولاد') header = "=== أوردرات سكن الولاد ===\n\n";
-      if (currentDormFilter === 'بنات') header = "=== أوردرات سكن البنات ===\n\n";
+      let catTitle = currentAdminCategory === 'صيدلية' ? "طلبات الصيدلية" : (currentAdminCategory === 'سوبرماركت' ? "طلبات السوبرماركت" : "جميع الطلبات");
+      let dormTitle = currentDormFilter === 'ولاد' ? " - سكن الولاد" : (currentDormFilter === 'بنات' ? " - سكن البنات" : "");
+      let header = "=== " + catTitle + dormTitle + " ===\n\n";
 
       const body = list.map((ord, idx) => {
         const lines = ord.items.split('\n').filter(l => l.trim() !== "");
@@ -395,7 +492,7 @@
 
     function renderAdminOrders() {
       const list = getOrdersList();
-      document.getElementById('orderCountText').innerText = "إجمالي الطلبات المعروضة " + list.length + " (من أصل " + loadedOrders.length + ")";
+      document.getElementById('orderCountText').innerText = "الطلبات المعروضة " + list.length + " (من إجمالي " + loadedOrders.length + ")";
       document.getElementById('previewBox').innerText = generateSupermarketText();
 
       const container = document.getElementById('studentsList');
@@ -408,6 +505,7 @@
           : (ord.orderTime || "");
         const shiftTag = ord.shift || "5:00 عصراً";
         const dormTag = "سكن " + (ord.dorm || "ولاد");
+        const catTag = ord.category || "سوبرماركت";
 
         const item = document.createElement('div');
         item.className = "p-3 bg-slate-900 rounded-xl border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs";
@@ -415,6 +513,7 @@
           <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="font-bold text-white text-sm">${idx + 1}. ${ord.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 font-bold border border-sky-500/20">${catTag}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-amber-400 font-bold border border-slate-700">${dormTag}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">${shiftTag}</span>
               ${timeDisplay ? `<span dir="ltr" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono border border-slate-700">${timeDisplay}</span>` : ''}
@@ -456,8 +555,9 @@
       const text = generateSupermarketText();
       navigator.clipboard.writeText(text).then(() => {
         const btnText = document.getElementById('copyBtnText');
+        const oldText = btnText.innerText;
         btnText.innerText = "تم نسخ الرسالة بنجاح! ✓";
-        setTimeout(() => btnText.innerText = "نسخ رسالة السوبرماركت", 2000);
+        setTimeout(() => btnText.innerText = oldText, 2000);
       });
     }
 
