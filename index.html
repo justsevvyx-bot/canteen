@@ -17,7 +17,7 @@
     <div class="text-center space-y-2">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        فترتي 5:00 م و 10:00 م
+        <span id="topScheduleBadge">فترتي 5:00 م و 10:00 م</span>
       </div>
       <h1 class="text-2xl sm:text-3xl font-extrabold text-white">هاتلي | Hatly</h1>
     </div>
@@ -55,13 +55,14 @@
     <div id="libraryUnavailableBox" class="hidden p-8 bg-slate-900/90 border border-slate-700 rounded-2xl text-center space-y-3">
       <div class="text-4xl">📚</div>
       <h3 class="font-extrabold text-lg text-amber-400">قسم المكتبة غير متاح حالياً</h3>
-      <p class="text-xs text-slate-400 leading-relaxed">سيتم تفعيل طلبات المكتبة والأدوات الدراسية قريباً. يمكنك حالياً الطلب من قسم السوبرماركت أو الصيدلية.</p>
+      <p class="text-xs text-slate-400 leading-relaxed">سيتم تفعيل طلبات المكتبة قريباً (بفترة يومية موحدة الساعة 8:30 مساءً). يمكنك حالياً الطلب من قسم السوبرماركت أو الصيدلية.</p>
     </div>
 
     <!-- استمارة الطلب -->
     <form id="orderForm" class="space-y-4" onsubmit="event.preventDefault(); submitStudentOrder();">
       
-      <div>
+      <!-- فترات السوبرماركت (5:00 م و 10:00 م) -->
+      <div id="supermarketShiftsBox">
         <label class="block text-sm font-semibold text-slate-300 mb-2">اختر فترة الاستلام المناسبة لك</label>
         <div class="grid grid-cols-2 gap-3">
           <label id="labelShift5" class="flex items-center gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-emerald-500 transition">
@@ -79,6 +80,21 @@
               <span id="sub10" class="text-[11px] text-slate-400">يقفل 9:30 م</span>
             </div>
           </label>
+        </div>
+      </div>
+
+      <!-- الفترة الإجبارية للصيدلية والمكتبة (8:30 مساءً) -->
+      <div id="singleShift830Box" class="hidden">
+        <label class="block text-sm font-semibold text-slate-300 mb-2">فترة الاستلام (فترة واحدة إجبارية)</label>
+        <div id="labelShift830" class="flex items-center justify-between p-3.5 bg-slate-900 border border-emerald-500/50 rounded-xl">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" checked disabled class="text-emerald-500 focus:ring-0">
+            <div>
+              <span class="font-bold text-sm text-white block">8:30 مساءً (فترة موحدة)</span>
+              <span id="sub830" class="text-[11px] text-slate-400">يقفل 8:00 م</span>
+            </div>
+          </div>
+          <span class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">إجباري</span>
         </div>
       </div>
 
@@ -177,15 +193,16 @@
       <!-- تبديل الأقسام داخل اللجنة -->
       <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
         <button type="button" onclick="setAdminCategory('سوبرماركت')" id="admCatSupermarket" class="py-2 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950">🛒 السوبرماركت</button>
-        <button type="button" onclick="setAdminCategory('صيدلية')" id="admCatPharmacy" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">💊 الصيدلية</button>
+        <button type="button" onclick="setAdminCategory('صيدلية')" id="admCatPharmacy" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">💊 الصيدلية (8:30 م)</button>
         <button type="button" onclick="setAdminCategory('ALL')" id="admCatAll" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">الكل</button>
       </div>
 
       <!-- فلاتر الفترات -->
-      <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-        <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">كل الفترات</button>
-        <button type="button" onclick="setAdminFilter('5:00 عصراً')" id="flt5" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 5:00 عصراً</button>
-        <button type="button" onclick="setAdminFilter('10:00 مساءً')" id="flt10" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">فترة 10:00 مساءً</button>
+      <div class="grid grid-cols-4 gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+        <button type="button" onclick="setAdminFilter('ALL')" id="fltAll" class="py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 text-white">كل الفترات</button>
+        <button type="button" onclick="setAdminFilter('5:00 عصراً')" id="flt5" class="py-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white">5:00 م</button>
+        <button type="button" onclick="setAdminFilter('8:30 مساءً')" id="flt830" class="py-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white">8:30 م</button>
+        <button type="button" onclick="setAdminFilter('10:00 مساءً')" id="flt10" class="py-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white">10:00 م</button>
       </div>
 
       <!-- فلاتر السكن -->
@@ -233,6 +250,9 @@
       const libBox = document.getElementById('libraryUnavailableBox');
       const formEl = document.getElementById('orderForm');
       const succBox = document.getElementById('successBox');
+      const supShifts = document.getElementById('supermarketShiftsBox');
+      const single830 = document.getElementById('singleShift830Box');
+      const topBadge = document.getElementById('topScheduleBadge');
 
       tabSup.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'سوبرماركت' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
       tabPhm.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm transition " + (cat === 'صيدلية' ? "bg-emerald-500 text-slate-950 shadow-lg" : "text-slate-300 hover:text-white");
@@ -241,8 +261,11 @@
       succBox.classList.add('hidden');
 
       if (cat === 'مكتبة') {
+        selectedStudentCategory = 'مكتبة';
+        topBadge.innerText = "فترة موحدة 8:30 مساءً";
         formEl.classList.add('hidden');
         libBox.classList.remove('hidden');
+        updateTimings();
         return;
       }
 
@@ -256,16 +279,24 @@
       const btn = document.getElementById('submitBtn');
 
       if (cat === 'صيدلية') {
+        topBadge.innerText = "فترة موحدة 8:30 مساءً";
+        supShifts.classList.add('hidden');
+        single830.classList.remove('hidden');
         lbl.innerText = "طلبات الصيدلية / الأدوية بالتفصيل والكميات";
         txt.placeholder = "مثال\n1 شريط بنادول إكسترا\n1 بلاستر طبي";
         notes.placeholder = "مثال لو الدواء مش موجود هات المثيل";
         btn.innerText = "إرسال طلب الصيدلية (Submit)";
       } else {
+        topBadge.innerText = "فترتي 5:00 م و 10:00 م";
+        supShifts.classList.remove('hidden');
+        single830.classList.add('hidden');
         lbl.innerText = "طلبات السوبرماركت بالتفصيل والكميات";
         txt.placeholder = "مثال\n2 كيس شيبسي بالجبنة كبير\n1 عصير جهينة مانجو";
         notes.placeholder = "مثال لو الحجم الكبير مش موجود هات الوسط";
         btn.innerText = "إرسال طلب السوبرماركت (Submit)";
       }
+
+      updateTimings();
     }
 
     function updateTimings() {
@@ -275,16 +306,28 @@
       let targetDate = new Date();
       let shiftText = "";
 
-      if (currentMin < 16 * 60 + 30) {
-        shiftText = "فترة 5:00 عصراً (قفل 4:30)";
-        targetDate.setHours(16, 30, 0, 0);
-      } else if (currentMin < 21 * 60 + 30) {
-        shiftText = "فترة 10:00 مساءً (قفل 9:30)";
-        targetDate.setHours(21, 30, 0, 0);
+      if (selectedStudentCategory === 'صيدلية' || selectedStudentCategory === 'مكتبة') {
+        // فترة 8:30 مساءً تقفل 8:00 م (1200 دقيقة) وتفتح للغد 9:30 م (1290 دقيقة)
+        if (currentMin < 20 * 60) {
+          shiftText = "فترة 8:30 مساءً (قفل 8:00 م)";
+          targetDate.setHours(20, 0, 0, 0);
+        } else {
+          shiftText = "فترة 8:30 مساء الغد (قفل 8:00 م)";
+          targetDate.setDate(targetDate.getDate() + 1);
+          targetDate.setHours(20, 0, 0, 0);
+        }
       } else {
-        shiftText = "فترة 5:00 عصر الغد (قفل 4:30)";
-        targetDate.setDate(targetDate.getDate() + 1);
-        targetDate.setHours(16, 30, 0, 0);
+        if (currentMin < 16 * 60 + 30) {
+          shiftText = "فترة 5:00 عصراً (قفل 4:30)";
+          targetDate.setHours(16, 30, 0, 0);
+        } else if (currentMin < 21 * 60 + 30) {
+          shiftText = "فترة 10:00 مساءً (قفل 9:30)";
+          targetDate.setHours(21, 30, 0, 0);
+        } else {
+          shiftText = "فترة 5:00 عصر الغد (قفل 4:30)";
+          targetDate.setDate(targetDate.getDate() + 1);
+          targetDate.setHours(16, 30, 0, 0);
+        }
       }
 
       const diffSec = Math.max(0, Math.floor((targetDate - now) / 1000));
@@ -302,9 +345,12 @@
         const lbl10 = document.getElementById('labelShift10');
         const sub5 = document.getElementById('sub5');
         const sub10 = document.getElementById('sub10');
+        const sub830 = document.getElementById('sub830');
+        const lbl830 = document.getElementById('labelShift830');
 
         const close5 = (currentMin >= 990 && currentMin < 18 * 60);
         const close10 = (currentMin >= 1290 && currentMin < 23 * 60);
+        const close830 = (currentMin >= 20 * 60 && currentMin < 21 * 60 + 30);
 
         if (r5 && lbl5 && sub5) {
           r5.disabled = close5;
@@ -321,6 +367,11 @@
           lbl10.style.pointerEvents = close10 ? "none" : "auto";
           sub10.innerText = close10 ? "مغلقة حالياً (تفتح 11:00 م)" : "يقفل 9:30 م";
         }
+
+        if (sub830 && lbl830) {
+          lbl830.style.opacity = close830 ? "0.5" : "1";
+          sub830.innerText = close830 ? "مغلقة للتجهيز (تفتح 9:30 م لطلبات الغد)" : "يقفل 8:00 م";
+        }
       } catch (e) {}
     }
 
@@ -328,17 +379,29 @@
     setInterval(updateTimings, 1000);
 
     async function submitStudentOrder() {
+      const now = new Date();
+      const currentMin = now.getHours() * 60 + now.getMinutes();
+
+      if (selectedStudentCategory === 'صيدلية' && currentMin >= 20 * 60 && currentMin < 21 * 60 + 30) {
+        alert("فترة الصيدلية مغلقة حالياً لتجهيز وتوصيل الطلبات، ويفتح التسجيل الساعة 9:30 م.");
+        return;
+      }
+
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerText = "جارٍ الإرسال...";
 
-      const shiftRadio = document.querySelector('input[name="deliveryShift"]:checked');
-      const selectedShift = shiftRadio ? shiftRadio.value : "5:00 عصراً";
+      let selectedShift = "5:00 عصراً";
+      if (selectedStudentCategory === 'صيدلية' || selectedStudentCategory === 'مكتبة') {
+        selectedShift = "8:30 مساءً";
+      } else {
+        const shiftRadio = document.querySelector('input[name="deliveryShift"]:checked');
+        selectedShift = shiftRadio ? shiftRadio.value : "5:00 عصراً";
+      }
 
       const dormRadio = document.querySelector('input[name="dormType"]:checked');
       const selectedDorm = dormRadio ? dormRadio.value : "ولاد";
 
-      const now = new Date();
       const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
       const newOrder = {
@@ -441,9 +504,10 @@
 
     function setAdminFilter(f) {
       currentFilter = f;
-      document.getElementById('fltAll').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
-      document.getElementById('flt5').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === '5:00 عصراً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
-      document.getElementById('flt10').className = "flex-1 py-1.5 rounded-lg text-xs font-bold " + (f === '10:00 مساءً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('fltAll').className = "py-1.5 rounded-lg text-[11px] font-bold " + (f === 'ALL' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('flt5').className = "py-1.5 rounded-lg text-[11px] font-bold " + (f === '5:00 عصراً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('flt830').className = "py-1.5 rounded-lg text-[11px] font-bold " + (f === '8:30 مساءً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
+      document.getElementById('flt10').className = "py-1.5 rounded-lg text-[11px] font-bold " + (f === '10:00 مساءً' ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white");
       renderAdminOrders();
     }
 
@@ -473,7 +537,7 @@
       const list = getOrdersList();
       if (list.length === 0) return "لا توجد طلبات مسجلة في هذا القسم حالياً.";
 
-      let catTitle = currentAdminCategory === 'صيدلية' ? "طلبات الصيدلية" : (currentAdminCategory === 'سوبرماركت' ? "طلبات السوبرماركت" : "جميع الطلبات");
+      let catTitle = currentAdminCategory === 'صيدلية' ? "طلبات الصيدلية (8:30 م)" : (currentAdminCategory === 'سوبرماركت' ? "طلبات السوبرماركت" : "جميع الطلبات");
       let dormTitle = currentDormFilter === 'ولاد' ? " - سكن الولاد" : (currentDormFilter === 'بنات' ? " - سكن البنات" : "");
       let header = "=== " + catTitle + dormTitle + " ===\n\n";
 
